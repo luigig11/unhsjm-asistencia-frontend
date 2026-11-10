@@ -5,9 +5,13 @@ export const PublicHeader: React.FC = () => {
     <header className="w-full bg-[#FFFFFF] border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-[#0F3C6E] text-white font-mono text-xs font-semibold tracking-wider">
-            UN
-          </span>
+          <div className="w-8 h-8 rounded-md bg-white border border-slate-200 p-0.5 flex items-center justify-center shrink-0">
+            <img
+              src="/Logos/Logo_Color_Sin_Letras.png"
+              alt="Logo UNHSJM"
+              className="w-full h-full object-contain"
+            />
+          </div>
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 text-left">
             <span className="text-sm font-bold text-[#0F3C6E] tracking-tight">
               UNHSJM

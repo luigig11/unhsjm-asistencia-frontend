@@ -23,18 +23,23 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onForgotPassword,
   onSuccess,
 }) => {
+  // Valores de los campos
   const [identifier, setIdentifier] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+
+  // Estados visuales de interacción
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [rememberSession, setRememberSession] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  // Mensajes de alerta y errores por campo
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{
     identifier?: string;
     password?: string;
   }>({});
 
+  // Validación básica antes del envío
   const validateForm = (): boolean => {
     const errors: { identifier?: string; password?: string } = {};
 
@@ -50,6 +55,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     return Object.keys(errors).length === 0;
   };
 
+  // Manejador del envío del formulario
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFeedback(null);
@@ -78,17 +84,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   return (
     <section className="lg:col-span-7 p-6 sm:p-8 lg:p-10 bg-[#FFFFFF] flex flex-col justify-between text-left">
       <div>
-        {/* Encabezado */}
+        {/* Encabezado del formulario de acceso */}
         <div className="pb-5 mb-6 border-b border-slate-200">
+          {/* Subtítulo de sección */}
           <span className="text-xs font-semibold uppercase tracking-wider text-[#1D63B8]">
             Acceso al Sistema
           </span>
+          {/* Título de la acción */}
           <h2 className="text-lg sm:text-xl font-bold text-[#0F172A] mt-0.5">
             Iniciar Sesión
           </h2>
         </div>
 
-        {/* Mensajes de Feedback */}
+        {/* Banner de alerta o confirmación */}
         {feedback && (
           <div
             role="alert"
@@ -99,6 +107,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             }`}
           >
             <div className="flex items-start gap-2">
+              {/* Ícono dinámico según el tipo de mensaje */}
               {feedback.type === 'error' ? (
                 <AlertCircleIcon className="w-4 h-4 text-[#C81E2B] shrink-0 mt-0.5" />
               ) : (
@@ -109,6 +118,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 <p className="mt-0.5 leading-relaxed">{feedback.detail}</p>
               </div>
             </div>
+            {/* Botón para cerrar la alerta */}
             <button
               type="button"
               onClick={() => setFeedback(null)}
@@ -120,10 +130,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           </div>
         )}
 
-        {/* Formulario */}
+        {/* Formulario de credenciales */}
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
-          {/* Correo Electrónico */}
+          {/* Campo: Correo Electrónico */}
           <div>
+            {/* Etiqueta del campo correo */}
             <label
               htmlFor="login-identifier"
               className="block text-xs font-semibold uppercase tracking-wider text-[#475569] mb-1.5"
@@ -131,9 +142,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               Correo Electrónico
             </label>
             <div className="relative">
+              {/* Ícono de sobre dentro del input */}
               <span className="inset-y-0 left-0 pl-3 flex items-center pointer-events-none absolute text-[#94A3B8]">
                 <MailIcon className="w-4 h-4" />
               </span>
+              {/* Input de texto para correo */}
               <input
                 id="login-identifier"
                 type="email"
@@ -153,6 +166,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 }`}
               />
             </div>
+            {/* Mensaje de error para el correo */}
             {fieldErrors.identifier && (
               <p className="mt-1.5 text-xs font-medium text-[#C81E2B]">
                 {fieldErrors.identifier}
@@ -160,15 +174,17 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             )}
           </div>
 
-          {/* Contraseña */}
+          {/* Campo: Contraseña */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
+              {/* Etiqueta del campo contraseña */}
               <label
                 htmlFor="login-password"
                 className="block text-xs font-semibold uppercase tracking-wider text-[#475569]"
               >
                 Contraseña
               </label>
+              {/* Enlace para abrir modal de recuperación */}
               <button
                 type="button"
                 onClick={onForgotPassword}
@@ -179,9 +195,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             </div>
 
             <div className="relative">
+              {/* Ícono de candado */}
               <span className="inset-y-0 left-0 pl-3 flex items-center pointer-events-none absolute text-[#94A3B8]">
                 <LockIcon className="w-4 h-4" />
               </span>
+              {/* Input para contraseña con toggle de visibilidad */}
               <input
                 id="login-password"
                 type={showPassword ? 'text' : 'password'}
@@ -200,11 +218,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                     : 'border-slate-200 focus:border-[#1D63B8]'
                 }`}
               />
+              {/* Botón para alternar ver/ocultar contraseña */}
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute inset-y-0 right-1.5 my-1.5 px-2.5 rounded text-xs font-medium text-[#475569] hover:text-[#0F3C6E] hover:bg-slate-100 border border-transparent hover:border-slate-200 flex items-center gap-1.5 transition-colors"
               >
+                {/* Ícono y texto dinámicos según el estado de visibilidad */}
                 {showPassword ? (
                   <>
                     <EyeOffIcon className="w-3.5 h-3.5" />
@@ -218,6 +238,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 )}
               </button>
             </div>
+            {/* Mensaje de error para la contraseña */}
             {fieldErrors.password && (
               <p className="mt-1.5 text-xs font-medium text-[#C81E2B]">
                 {fieldErrors.password}
@@ -225,22 +246,24 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             )}
           </div>
 
-          {/* Recordar sesión */}
+          {/* Checkbox: Recordar sesión */}
           <div className="flex items-center pt-1">
             <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+              {/* Casilla de selección */}
               <input
                 type="checkbox"
                 checked={rememberSession}
                 onChange={(e) => setRememberSession(e.target.checked)}
                 className="w-4 h-4 rounded border-slate-300 text-[#0F3C6E] focus:ring-0 accent-[#0F3C6E]"
               />
+              {/* Texto del checkbox */}
               <span className="text-xs text-[#475569] font-medium">
                 Recordar sesión
               </span>
             </label>
           </div>
 
-          {/* Botón Iniciar Sesión */}
+          {/* Botón principal de submit */}
           <div className="pt-2">
             <button
               type="submit"
@@ -251,6 +274,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   : 'bg-[#0F3C6E] border-[#0F3C6E] hover:bg-[#0A294D] active:bg-[#0A294D]'
               }`}
             >
+              {/* Spinner de carga o texto de acción */}
               {isSubmitting ? (
                 <>
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -264,7 +288,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         </form>
       </div>
 
-      {/* Pie del Formulario */}
+      {/* Pie inferior del formulario */}
       <div className="mt-8 pt-4 border-t border-slate-200 flex items-center justify-between text-xs text-[#475569]">
         <span>Soporte Técnico · Registro Académico</span>
         <span className="font-mono text-[11px] text-[#0F3C6E]">

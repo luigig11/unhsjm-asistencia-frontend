@@ -12,12 +12,14 @@ interface DashboardSidebarProps {
   collapsed: boolean;
   onToggleCollapse: () => void;
   onNavigate?: (screenKey: string) => void;
+  activeScreen?: string;
 }
 
 export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   collapsed,
   onToggleCollapse,
   onNavigate,
+  activeScreen = 'P02',
 }) => {
   return (
     <aside
@@ -26,15 +28,20 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
       } bg-[#0F3C6E] text-white border-r border-[#0A294D] flex flex-col justify-between shrink-0 transition-all duration-150`}
     >
       <div>
-        {/* Cabecera del Sidebar */}
-        <div className="h-16 px-4 flex items-center justify-between border-b border-[#0A294D]">
-          {!collapsed && (
+        {/* Cabecera del Sidebar con Logo Oficial y Botón de Toggle */}
+        <div className="h-16 px-3 flex items-center justify-between border-b border-[#0A294D]">
+          {!collapsed ? (
+            /* Vista expandida: Logo + Texto institucional */
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="w-8 h-8 rounded-md bg-[#1D63B8] border border-white/20 flex items-center justify-center font-mono text-xs font-bold shrink-0">
-                UN
+              <div className="w-8 h-8 rounded-md bg-white border border-white/20 p-1 flex items-center justify-center shrink-0 shadow-xs">
+                <img
+                  src="/Logos/Logo_Color_Sin_Letras.png"
+                  alt="UNHSJM"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div className="truncate text-left">
-                <p className="text-sm font-bold tracking-tight leading-none">
+                <p className="text-sm font-bold tracking-tight leading-none text-white">
                   UNHSJM
                 </p>
                 <p className="text-[11px] text-[#EBF3FC]/80 mt-0.5 truncate">
@@ -42,15 +49,34 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                 </p>
               </div>
             </div>
+          ) : (
+            /* Vista colapsada: Logo interactivo que expande al hacer clic */
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="w-9 h-9 rounded-md bg-white border border-white/20 p-1 flex items-center justify-center shrink-0 mx-auto hover:ring-2 hover:ring-[#1D63B8] transition-all cursor-pointer"
+              title="Clic para expandir menú lateral"
+            >
+              <img
+                src="/Logos/Logo_Color_Sin_Letras.png"
+                alt="UNHSJM"
+                className="w-full h-full object-contain"
+              />
+            </button>
           )}
-          <button
-            type="button"
-            onClick={onToggleCollapse}
-            className="p-1.5 rounded-md text-[#EBF3FC] hover:bg-[#0A294D] border border-transparent hover:border-[#1D63B8] transition-colors mx-auto sm:mx-0"
-            title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
-          >
-            <MenuIcon className="w-4 h-4" />
-          </button>
+
+          {/* Botón de hamburguesa visible cuando está expandido */}
+          {!collapsed && (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="p-1.5 rounded-md text-[#EBF3FC] hover:bg-[#0A294D] border border-transparent hover:border-[#1D63B8] transition-colors cursor-pointer"
+              title="Colapsar menú lateral"
+              aria-label="Colapsar menú"
+            >
+              <MenuIcon className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Menú Principal de Navegación */}
@@ -61,28 +87,46 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             </p>
           )}
 
+          {/* Enlace al Dashboard (Pantalla 02) */}
           <button
             type="button"
             onClick={() => onNavigate?.('P02')}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold bg-[#0A294D] text-white border border-[#1D63B8]"
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P02'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Panel Principal' : undefined}
           >
             <GridIcon className="w-4 h-4 shrink-0 text-[#EBF3FC]" />
             {!collapsed && <span className="truncate">Panel Principal</span>}
           </button>
 
+          {/* Enlace a Usuarios y Docentes (Pantalla 03) */}
           <button
             type="button"
             onClick={() => onNavigate?.('P03')}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white transition-colors"
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P03'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Usuarios y Docentes' : undefined}
           >
             <UsersIcon className="w-4 h-4 shrink-0" />
             {!collapsed && <span className="truncate">Usuarios y Docentes</span>}
           </button>
 
+          {/* Enlace a Catálogos (Pantalla 04) */}
           <button
             type="button"
             onClick={() => onNavigate?.('P04')}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white transition-colors"
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P04'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Catálogos Institucionales' : undefined}
           >
             <DatabaseIcon className="w-4 h-4 shrink-0" />
             {!collapsed && <span className="truncate">Catálogos Institucionales</span>}
@@ -94,19 +138,31 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             </p>
           )}
 
+          {/* Enlace a Planes Académicos (Pantalla 05) */}
           <button
             type="button"
             onClick={() => onNavigate?.('P05')}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white transition-colors"
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P05'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Planes Académicos' : undefined}
           >
             <DocumentTextIcon className="w-4 h-4 shrink-0" />
             {!collapsed && <span className="truncate">Planes Académicos</span>}
           </button>
 
+          {/* Enlace a Malla Curricular (Pantalla 06) */}
           <button
             type="button"
             onClick={() => onNavigate?.('P06')}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white transition-colors"
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P06'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Malla Curricular' : undefined}
           >
             <KanbanIcon className="w-4 h-4 shrink-0" />
             {!collapsed && <span className="truncate">Malla Curricular</span>}
@@ -126,10 +182,11 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                 Sesión iniciada
               </p>
             </div>
+            {/* Botón cerrar sesión */}
             <button
               type="button"
               onClick={() => onNavigate?.('P01')}
-              className="px-2.5 py-1 rounded text-[11px] font-medium bg-[#0A294D] hover:bg-[#C81E2B] text-white border border-[#1D63B8] hover:border-[#C81E2B] transition-colors"
+              className="px-2.5 py-1 rounded text-[11px] font-medium bg-[#0A294D] hover:bg-[#C81E2B] text-white border border-[#1D63B8] hover:border-[#C81E2B] transition-colors cursor-pointer"
             >
               Cerrar sesión
             </button>
@@ -138,7 +195,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           <button
             type="button"
             onClick={() => onNavigate?.('P01')}
-            className="w-full py-1.5 rounded text-xs font-mono bg-[#0A294D] hover:bg-[#C81E2B] text-white"
+            className="w-full py-1.5 rounded text-xs font-mono bg-[#0A294D] hover:bg-[#C81E2B] text-white cursor-pointer"
             title="Cerrar sesión"
           >
             ←
