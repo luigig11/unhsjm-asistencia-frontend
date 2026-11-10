@@ -1,121 +1,54 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { Pantalla01Login } from './views/Pantalla01Login'
+import { Pantalla02Dashboard } from './views/Pantalla02Dashboard'
+
+type ActiveScreen = 'P01' | 'P02'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('P01')
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+      <div className="bg-[#0A294D] text-white border-b border-[#1D63B8] px-4 py-1.5 flex items-center justify-end gap-1.5 text-xs">
         <button
           type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          onClick={() => setActiveScreen('P01')}
+          className={`px-2.5 py-1 rounded text-[11px] font-medium border transition-colors ${
+            activeScreen === 'P01'
+              ? 'bg-white text-[#0F3C6E] border-white font-semibold'
+              : 'bg-[#0F3C6E] text-[#EBF3FC] border-[#1D63B8] hover:bg-[#1D63B8]'
+          }`}
         >
-          Count is {count}
+          Login
         </button>
-      </section>
 
-      <div className="ticks"></div>
+        <button
+          type="button"
+          onClick={() => setActiveScreen('P02')}
+          className={`px-2.5 py-1 rounded text-[11px] font-medium border transition-colors ${
+            activeScreen === 'P02'
+              ? 'bg-white text-[#0F3C6E] border-white font-semibold'
+              : 'bg-[#0F3C6E] text-[#EBF3FC] border-[#1D63B8] hover:bg-[#1D63B8]'
+          }`}
+        >
+          Dashboard
+        </button>
+      </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <div className="flex-1">
+        {activeScreen === 'P01' ? (
+          <Pantalla01Login />
+        ) : (
+          <Pantalla02Dashboard
+            onNavigate={(screenKey) => {
+              if (screenKey === 'P01' || screenKey === 'P02') {
+                setActiveScreen(screenKey)
+              }
+            }}
+          />
+        )}
+      </div>
+    </div>
   )
 }
 

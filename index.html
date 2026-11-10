@@ -4,7 +4,33 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>unhsjm-asistencia-frontend</title>
+    <title>UNHSJM - Control de Asistencia Académica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              brand: {
+                primary: '#0F3C6E',
+                hover: '#0A294D',
+                secondary: '#1D63B8',
+                tint: '#EBF3FC',
+                red: '#C81E2B',
+                gold: '#D97706',
+              },
+            },
+          },
+        },
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
