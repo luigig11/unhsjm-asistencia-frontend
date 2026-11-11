@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   GridIcon,
@@ -28,10 +29,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
       } bg-[#0F3C6E] text-white border-r border-[#0A294D] flex flex-col justify-between shrink-0 transition-all duration-150`}
     >
       <div>
-        {/* Cabecera del Sidebar con Logo Oficial y Botón de Toggle */}
+        {/* CABECERA DEL SIDEBAR */}
         <div className="h-16 px-3 flex items-center justify-between border-b border-[#0A294D]">
           {!collapsed ? (
-            /* Vista expandida: Logo + Texto institucional */
             <div className="flex items-center gap-2.5 overflow-hidden">
               <div className="w-8 h-8 rounded-md bg-white border border-white/20 p-1 flex items-center justify-center shrink-0 shadow-xs">
                 <img
@@ -40,6 +40,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                   className="w-full h-full object-contain"
                 />
               </div>
+
               <div className="truncate text-left">
                 <p className="text-sm font-bold tracking-tight leading-none text-white">
                   UNHSJM
@@ -50,7 +51,6 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
               </div>
             </div>
           ) : (
-            /* Vista colapsada: Logo interactivo que expande al hacer clic */
             <button
               type="button"
               onClick={onToggleCollapse}
@@ -65,7 +65,6 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             </button>
           )}
 
-          {/* Botón de hamburguesa visible cuando está expandido */}
           {!collapsed && (
             <button
               type="button"
@@ -79,7 +78,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           )}
         </div>
 
-        {/* Menú Principal de Navegación */}
+        {/* MENÚ PRINCIPAL DE NAVEGACIÓN */}
         <nav className="p-2.5 space-y-1 text-left">
           {!collapsed && (
             <p className="px-2.5 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[#EBF3FC]/60">
@@ -87,7 +86,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             </p>
           )}
 
-          {/* Enlace al Dashboard (Pantalla 02) */}
+          {/* P02 - DASHBOARD */}
           <button
             type="button"
             onClick={() => onNavigate?.('P02')}
@@ -102,7 +101,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             {!collapsed && <span className="truncate">Panel Principal</span>}
           </button>
 
-          {/* Enlace a Usuarios y Docentes (Pantalla 03) */}
+          {/* P03 - USUARIOS Y DOCENTES */}
           <button
             type="button"
             onClick={() => onNavigate?.('P03')}
@@ -117,7 +116,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             {!collapsed && <span className="truncate">Usuarios y Docentes</span>}
           </button>
 
-          {/* Enlace a Catálogos (Pantalla 04) */}
+          {/* P04 - CATÁLOGOS */}
           <button
             type="button"
             onClick={() => onNavigate?.('P04')}
@@ -129,7 +128,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             title={collapsed ? 'Catálogos Institucionales' : undefined}
           >
             <DatabaseIcon className="w-4 h-4 shrink-0" />
-            {!collapsed && <span className="truncate">Catálogos Institucionales</span>}
+            {!collapsed && (
+              <span className="truncate">Catálogos Institucionales</span>
+            )}
           </button>
 
           {!collapsed && (
@@ -138,7 +139,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             </p>
           )}
 
-          {/* Enlace a Planes Académicos (Pantalla 05) */}
+          {/* P05 - PLANES ACADÉMICOS */}
           <button
             type="button"
             onClick={() => onNavigate?.('P05')}
@@ -153,7 +154,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             {!collapsed && <span className="truncate">Planes Académicos</span>}
           </button>
 
-          {/* Enlace a Malla Curricular (Pantalla 06) */}
+          {/* P06 - MALLA CURRICULAR */}
           <button
             type="button"
             onClick={() => onNavigate?.('P06')}
@@ -167,10 +168,131 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             <KanbanIcon className="w-4 h-4 shrink-0" />
             {!collapsed && <span className="truncate">Malla Curricular</span>}
           </button>
+
+          {!collapsed && (
+            <p className="px-2.5 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[#EBF3FC]/60">
+              Calendario Académico
+            </p>
+          )}
+
+          {/* P07 - PERÍODO ESCOLAR Y FERIADOS */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('P07')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P07'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Período Escolar y Feriados' : undefined}
+          >
+            <DocumentTextIcon className="w-4 h-4 shrink-0" />
+            {!collapsed && (
+              <span className="truncate">Período Escolar y Feriados</span>
+            )}
+          </button>
+
+          {/* P08 - OFERTA ACADÉMICA */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('P08')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P08'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Oferta Académica' : undefined}
+          >
+            <DocumentTextIcon className="w-4 h-4 shrink-0" />
+            {!collapsed && <span className="truncate">Oferta Académica</span>}
+          </button>
+
+          {/* P09 - PROGRAMADOR DE HORARIOS */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('P09')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P09'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Programador de Horarios' : undefined}
+          >
+            <KanbanIcon className="w-4 h-4 shrink-0" />
+            {!collapsed && (
+              <span className="truncate">Programador de Horarios</span>
+            )}
+          </button>
+
+          {/* P10 - MATRÍCULA DE ESTUDIANTES */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('P10')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P10'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Matrícula de Estudiantes' : undefined}
+          >
+            <UsersIcon className="w-4 h-4 shrink-0" />
+            {!collapsed && (
+              <span className="truncate">Matrícula de Estudiantes</span>
+            )}
+          </button>
+
+          {/* P11 - PORTAL DEL DOCENTE */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('P11')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P11'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Portal del Docente' : undefined}
+          >
+            <UsersIcon className="w-4 h-4 shrink-0" />
+            {!collapsed && <span className="truncate">Portal del Docente</span>}
+          </button>
+
+          {/* P12 - ACTA DE PASE DE LISTA */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('P12')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P12'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Acta de Pase de Lista' : undefined}
+          >
+            <DocumentTextIcon className="w-4 h-4 shrink-0" />
+            {!collapsed && (
+              <span className="truncate">Acta de Pase de Lista</span>
+            )}
+          </button>
+
+          {/* P13 - SÁBANA CONSOLIDADA DE ASISTENCIA */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('P13')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+              activeScreen === 'P13'
+                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+            } ${collapsed ? 'justify-center' : ''}`}
+            title={collapsed ? 'Sábana Consolidada de Asistencia' : undefined}
+          >
+            <DocumentTextIcon className="w-4 h-4 shrink-0" />
+            {!collapsed && (
+              <span className="truncate">Sábana Consolidada</span>
+            )}
+          </button>
         </nav>
       </div>
 
-      {/* Pie del Sidebar: Sesión de Usuario */}
+      {/* PIE DEL SIDEBAR: SESIÓN DE USUARIO */}
       <div className="p-3 border-t border-[#0A294D]">
         {!collapsed ? (
           <div className="flex items-center justify-between gap-2">
@@ -182,7 +304,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                 Sesión iniciada
               </p>
             </div>
-            {/* Botón cerrar sesión */}
+
             <button
               type="button"
               onClick={() => onNavigate?.('P01')}
