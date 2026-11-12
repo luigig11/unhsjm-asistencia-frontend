@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   GridIcon,
@@ -8,6 +7,7 @@ import {
   KanbanIcon,
   MenuIcon,
 } from '../common/Icons';
+import { useAuth } from '../../context/AuthContext';
 
 interface DashboardSidebarProps {
   collapsed: boolean;
@@ -22,6 +22,18 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   onNavigate,
   activeScreen = 'P02',
 }) => {
+  const { user, logout } = useAuth();
+
+  const rol = user?.rolCode || 'ADMIN';
+  const isDocente = rol === 'DOCENTE';
+  const isDirector = rol === 'DIRECTOR';
+  const isAdmin = rol === 'ADMIN';
+
+  const handleLogout = async () => {
+    await logout();
+    onNavigate?.('P01');
+  };
+
   return (
     <aside
       className={`${
@@ -29,7 +41,6 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
       } bg-[#0F3C6E] text-white border-r border-[#0A294D] flex flex-col justify-between shrink-0 transition-all duration-150`}
     >
       <div>
-        {/* CABECERA DEL SIDEBAR */}
         <div className="h-16 px-3 flex items-center justify-between border-b border-[#0A294D]">
           {!collapsed ? (
             <div className="flex items-center gap-2.5 overflow-hidden">
@@ -78,15 +89,13 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           )}
         </div>
 
-        {/* MENÚ PRINCIPAL DE NAVEGACIÓN */}
         <nav className="p-2.5 space-y-1 text-left">
           {!collapsed && (
             <p className="px-2.5 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[#EBF3FC]/60">
-              Administración
+              Principal
             </p>
           )}
 
-          {/* P02 - DASHBOARD */}
           <button
             type="button"
             onClick={() => onNavigate?.('P02')}
@@ -101,147 +110,158 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             {!collapsed && <span className="truncate">Panel Principal</span>}
           </button>
 
-          {/* P03 - USUARIOS Y DOCENTES */}
-          <button
-            type="button"
-            onClick={() => onNavigate?.('P03')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P03'
-                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
-                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
-            } ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? 'Usuarios y Docentes' : undefined}
-          >
-            <UsersIcon className="w-4 h-4 shrink-0" />
-            {!collapsed && <span className="truncate">Usuarios y Docentes</span>}
-          </button>
+          {(isAdmin || isDirector) && (
+            <>
+              {!collapsed && (
+                <p className="px-2.5 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[#EBF3FC]/60">
+                  Administración
+                </p>
+              )}
 
-          {/* P04 - CATÁLOGOS */}
-          <button
-            type="button"
-            onClick={() => onNavigate?.('P04')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P04'
-                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
-                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
-            } ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? 'Catálogos Institucionales' : undefined}
-          >
-            <DatabaseIcon className="w-4 h-4 shrink-0" />
-            {!collapsed && (
-              <span className="truncate">Catálogos Institucionales</span>
-            )}
-          </button>
+              <button
+                type="button"
+                onClick={() => onNavigate?.('P03')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                  activeScreen === 'P03'
+                    ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                    : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+                } ${collapsed ? 'justify-center' : ''}`}
+                title={collapsed ? 'Usuarios y Docentes' : undefined}
+              >
+                <UsersIcon className="w-4 h-4 shrink-0" />
+                {!collapsed && <span className="truncate">Usuarios y Docentes</span>}
+              </button>
+
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => onNavigate?.('P04')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                    activeScreen === 'P04'
+                      ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                      : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+                  } ${collapsed ? 'justify-center' : ''}`}
+                  title={collapsed ? 'Catálogos Institucionales' : undefined}
+                >
+                  <DatabaseIcon className="w-4 h-4 shrink-0" />
+                  {!collapsed && (
+                    <span className="truncate">Catálogos Institucionales</span>
+                  )}
+                </button>
+              )}
+
+              {!collapsed && (
+                <p className="px-2.5 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[#EBF3FC]/60">
+                  Diseño Curricular
+                </p>
+              )}
+
+              <button
+                type="button"
+                onClick={() => onNavigate?.('P05')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                  activeScreen === 'P05'
+                    ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                    : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+                } ${collapsed ? 'justify-center' : ''}`}
+                title={collapsed ? 'Planes Académicos' : undefined}
+              >
+                <DocumentTextIcon className="w-4 h-4 shrink-0" />
+                {!collapsed && <span className="truncate">Planes Académicos</span>}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onNavigate?.('P06')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                  activeScreen === 'P06'
+                    ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                    : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+                } ${collapsed ? 'justify-center' : ''}`}
+                title={collapsed ? 'Malla Curricular' : undefined}
+              >
+                <KanbanIcon className="w-4 h-4 shrink-0" />
+                {!collapsed && <span className="truncate">Malla Curricular</span>}
+              </button>
+
+              {!collapsed && (
+                <p className="px-2.5 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[#EBF3FC]/60">
+                  Oferta y Planificación
+                </p>
+              )}
+
+              <button
+                type="button"
+                onClick={() => onNavigate?.('P07')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                  activeScreen === 'P07'
+                    ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                    : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+                } ${collapsed ? 'justify-center' : ''}`}
+                title={collapsed ? 'Período Escolar y Feriados' : undefined}
+              >
+                <DocumentTextIcon className="w-4 h-4 shrink-0" />
+                {!collapsed && (
+                  <span className="truncate">Período Escolar y Feriados</span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onNavigate?.('P08')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                  activeScreen === 'P08'
+                    ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                    : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+                } ${collapsed ? 'justify-center' : ''}`}
+                title={collapsed ? 'Oferta Académica' : undefined}
+              >
+                <DocumentTextIcon className="w-4 h-4 shrink-0" />
+                {!collapsed && <span className="truncate">Oferta Académica</span>}
+              </button>
+
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => onNavigate?.('P09')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                    activeScreen === 'P09'
+                      ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                      : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+                  } ${collapsed ? 'justify-center' : ''}`}
+                  title={collapsed ? 'Programador de Horarios' : undefined}
+                >
+                  <KanbanIcon className="w-4 h-4 shrink-0" />
+                  {!collapsed && (
+                    <span className="truncate">Programador de Horarios</span>
+                  )}
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => onNavigate?.('P10')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                  activeScreen === 'P10'
+                    ? 'bg-[#0A294D] text-white border-[#1D63B8]'
+                    : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
+                } ${collapsed ? 'justify-center' : ''}`}
+                title={collapsed ? 'Matrícula de Estudiantes' : undefined}
+              >
+                <UsersIcon className="w-4 h-4 shrink-0" />
+                {!collapsed && (
+                  <span className="truncate">Matrícula de Estudiantes</span>
+                )}
+              </button>
+            </>
+          )}
 
           {!collapsed && (
-            <p className="px-2.5 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[#EBF3FC]/60">
-              Diseño Curricular
+            <p className="px-2.5 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[#EBF3FC]/60">
+              Control Docente y Asistencia
             </p>
           )}
 
-          {/* P05 - PLANES ACADÉMICOS */}
-          <button
-            type="button"
-            onClick={() => onNavigate?.('P05')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P05'
-                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
-                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
-            } ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? 'Planes Académicos' : undefined}
-          >
-            <DocumentTextIcon className="w-4 h-4 shrink-0" />
-            {!collapsed && <span className="truncate">Planes Académicos</span>}
-          </button>
-
-          {/* P06 - MALLA CURRICULAR */}
-          <button
-            type="button"
-            onClick={() => onNavigate?.('P06')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P06'
-                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
-                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
-            } ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? 'Malla Curricular' : undefined}
-          >
-            <KanbanIcon className="w-4 h-4 shrink-0" />
-            {!collapsed && <span className="truncate">Malla Curricular</span>}
-          </button>
-
-          {!collapsed && (
-            <p className="px-2.5 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[#EBF3FC]/60">
-              Calendario Académico
-            </p>
-          )}
-
-          {/* P07 - PERÍODO ESCOLAR Y FERIADOS */}
-          <button
-            type="button"
-            onClick={() => onNavigate?.('P07')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P07'
-                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
-                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
-            } ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? 'Período Escolar y Feriados' : undefined}
-          >
-            <DocumentTextIcon className="w-4 h-4 shrink-0" />
-            {!collapsed && (
-              <span className="truncate">Período Escolar y Feriados</span>
-            )}
-          </button>
-
-          {/* P08 - OFERTA ACADÉMICA */}
-          <button
-            type="button"
-            onClick={() => onNavigate?.('P08')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P08'
-                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
-                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
-            } ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? 'Oferta Académica' : undefined}
-          >
-            <DocumentTextIcon className="w-4 h-4 shrink-0" />
-            {!collapsed && <span className="truncate">Oferta Académica</span>}
-          </button>
-
-          {/* P09 - PROGRAMADOR DE HORARIOS */}
-          <button
-            type="button"
-            onClick={() => onNavigate?.('P09')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P09'
-                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
-                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
-            } ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? 'Programador de Horarios' : undefined}
-          >
-            <KanbanIcon className="w-4 h-4 shrink-0" />
-            {!collapsed && (
-              <span className="truncate">Programador de Horarios</span>
-            )}
-          </button>
-
-          {/* P10 - MATRÍCULA DE ESTUDIANTES */}
-          <button
-            type="button"
-            onClick={() => onNavigate?.('P10')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P10'
-                ? 'bg-[#0A294D] text-white border-[#1D63B8]'
-                : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
-            } ${collapsed ? 'justify-center' : ''}`}
-            title={collapsed ? 'Matrícula de Estudiantes' : undefined}
-          >
-            <UsersIcon className="w-4 h-4 shrink-0" />
-            {!collapsed && (
-              <span className="truncate">Matrícula de Estudiantes</span>
-            )}
-          </button>
-
-          {/* P11 - PORTAL DEL DOCENTE */}
           <button
             type="button"
             onClick={() => onNavigate?.('P11')}
@@ -256,7 +276,6 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             {!collapsed && <span className="truncate">Portal del Docente</span>}
           </button>
 
-          {/* P12 - ACTA DE PASE DE LISTA */}
           <button
             type="button"
             onClick={() => onNavigate?.('P12')}
@@ -273,7 +292,6 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             )}
           </button>
 
-          {/* P13 - SÁBANA CONSOLIDADA DE ASISTENCIA */}
           <button
             type="button"
             onClick={() => onNavigate?.('P13')}
@@ -292,22 +310,21 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         </nav>
       </div>
 
-      {/* PIE DEL SIDEBAR: SESIÓN DE USUARIO */}
       <div className="p-3 border-t border-[#0A294D]">
         {!collapsed ? (
           <div className="flex items-center justify-between gap-2">
             <div className="text-left truncate">
               <p className="text-xs font-semibold text-white truncate">
-                Usuario Activo
+                {user ? `${user.nombre} ${user.apellido}` : 'Usuario Activo'}
               </p>
-              <p className="text-[11px] text-[#EBF3FC]/80">
-                Sesión iniciada
+              <p className="text-[10px] uppercase font-bold text-[#93C5FD] tracking-wide">
+                {user?.rolCode || 'UNHSJM'}
               </p>
             </div>
 
             <button
               type="button"
-              onClick={() => onNavigate?.('P01')}
+              onClick={handleLogout}
               className="px-2.5 py-1 rounded text-[11px] font-medium bg-[#0A294D] hover:bg-[#C81E2B] text-white border border-[#1D63B8] hover:border-[#C81E2B] transition-colors cursor-pointer"
             >
               Cerrar sesión
@@ -316,7 +333,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         ) : (
           <button
             type="button"
-            onClick={() => onNavigate?.('P01')}
+            onClick={handleLogout}
             className="w-full py-1.5 rounded text-xs font-mono bg-[#0A294D] hover:bg-[#C81E2B] text-white cursor-pointer"
             title="Cerrar sesión"
           >

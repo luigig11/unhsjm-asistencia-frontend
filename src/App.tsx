@@ -1,19 +1,19 @@
-
 import { useState } from 'react';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
-import { Pantalla01Login } from './views/Pantalla01Login';
-import { Pantalla02Dashboard } from './views/Pantalla02Dashboard';
-import { Pantalla03UsuariosDocentes } from './views/Pantalla03UsuariosDocentes';
-import { Pantalla04Catalogos } from './views/Pantalla04Catalogos';
-import { Pantalla05PlanesAcademicos } from './views/Pantalla05PlanesAcademicos';
-import { Pantalla06ConstructorMalla } from './views/Pantalla06ConstructorMalla';
-import { Pantalla07PeriodoEscolar } from './views/Pantalla07PeriodoEscolar';
-import { Pantalla08OfertaAcademica } from './views/Pantalla08OfertaAcademica';
-import { Pantalla09ProgramadorHorarios } from './views/Pantalla09ProgramadorHorarios';
-import { Pantalla10MatriculaEstudiante } from './views/Pantalla10MatriculaEstudiante';
-import { Pantalla11PortalDocente } from './views/Pantalla11PortalDocente';
-import { Pantalla12ActaAsistencia } from './views/Pantalla12ActaAsistencia';
-import { Pantalla13SabanaAsistencia } from './views/Pantalla13SabanaAsistencia';
+import { Login } from './views/Login';
+import { Dashboard } from './views/Dashboard';
+import { Users } from './views/Users';
+import { Catalogs } from './views/Catalogs';
+import { AcademicPlans } from './views/AcademicPlans';
+import { CurriculumDesign } from './views/CurriculumDesign';
+import { AcademicPeriod } from './views/AcademicPeriod';
+import { AcademicOffering } from './views/AcademicOffering';
+import { SchedulePlanner } from './views/SchedulePlanner';
+import { StudentEnrollment } from './views/StudentEnrollment';
+import { TeacherPortal } from './views/TeacherPortal';
+import { AttendanceRecord } from './views/AttendanceRecord';
+import { AttendanceSheet } from './views/AttendanceSheet';
 
 import { MainLayout } from './components/layout/MainLayout';
 
@@ -32,13 +32,24 @@ type ActiveScreen =
   | 'P12'
   | 'P13';
 
-function App() {
-  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('P06');
+function AppContent() {
+  const { isAuthenticated, logout } = useAuth();
+  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('P01');
+  const [selectedSessionId, setSelectedSessionId] = useState<string>('');
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('');
 
-  // Pantalla de inicio de sesión
-  if (activeScreen === 'P01') {
+  const handleNavigate = async (key: string) => {
+    if (key === 'P01') {
+      await logout();
+      setActiveScreen('P01');
+      return;
+    }
+    setActiveScreen(key as ActiveScreen);
+  };
+
+  if (!isAuthenticated || activeScreen === 'P01') {
     return (
-      <Pantalla01Login
+      <Login
         onLoginSuccess={() => setActiveScreen('P02')}
       />
     );
@@ -46,72 +57,60 @@ function App() {
 
   return (
     <MainLayout
-      onNavigate={(key) => setActiveScreen(key as ActiveScreen)}
+      onNavigate={handleNavigate}
       activeScreen={activeScreen}
     >
-      {/* P02 - Dashboard */}
-      {activeScreen === 'P02' && (
-        <Pantalla02Dashboard />
-      )}
-
-      {/* P03 - Usuarios y Docentes */}
-      {activeScreen === 'P03' && (
-        <Pantalla03UsuariosDocentes />
-      )}
-
-      {/* P04 - Catálogos Institucionales */}
-      {activeScreen === 'P04' && (
-        <Pantalla04Catalogos />
-      )}
-
-      {/* P05 - Planes Académicos */}
+      {activeScreen === 'P02' && <Dashboard />}
+      {activeScreen === 'P03' && <Users />}
+      {activeScreen === 'P04' && <Catalogs />}
       {activeScreen === 'P05' && (
-        <Pantalla05PlanesAcademicos
+        <AcademicPlans
           onNavigateToMalla={() => setActiveScreen('P06')}
         />
       )}
-
-      {/* P06 - Constructor de Malla Curricular */}
       {activeScreen === 'P06' && (
-        <Pantalla06ConstructorMalla
+        <CurriculumDesign
           onBackToPlans={() => setActiveScreen('P05')}
         />
       )}
-
-      {/* P07 - Período Escolar y Feriados */}
-      {activeScreen === 'P07' && (
-        <Pantalla07PeriodoEscolar />
-      )}
-
-      {/* P08 - Oferta Académica y Grupos */}
-      {activeScreen === 'P08' && (
-        <Pantalla08OfertaAcademica />
-      )}
-
-      {/* P09 - Programador de Horarios */}
-      {activeScreen === 'P09' && (
-        <Pantalla09ProgramadorHorarios />
-      )}
-
-      {/* P10 - Matrícula de Estudiantes */}
-      {activeScreen === 'P10' && (
-        <Pantalla10MatriculaEstudiante />
-      )}
-
-      {/* P11 - Portal del Docente */}
+      {activeScreen === 'P07' && <AcademicPeriod />}
+      {activeScreen === 'P08' && <AcademicOffering />}
+      {activeScreen === 'P09' && <SchedulePlanner />}
+      {activeScreen === 'P10' && <StudentEnrollment />}
       {activeScreen === 'P11' && (
-        <Pantalla11PortalDocente />
+        <TeacherPortal
+          onNavigateToAttendance={(sessionId, courseId) => {
+            setSelectedSessionId(sessionId);
+            if (courseId) setSelectedCourseId(courseId);
+            setActiveScreen('P12');
+          }}
+        />
       )}
-
-      {/* P12 - Acta de Asistencia */}
       {activeScreen === 'P12' && (
-        <Pantalla12ActaAsistencia />
+        <AttendanceRecord
+          sessionId={selectedSessionId}
+          onBack={() => setActiveScreen('P11')}
+          onNavigateToSheet={(courseId) => {
+            if (courseId) setSelectedCourseId(courseId);
+            setActiveScreen('P13');
+          }}
+        />
       )}
-      {/* P13 - Sábana Consolidada de Asistencia */}
       {activeScreen === 'P13' && (
-      <Pantalla13SabanaAsistencia />
+        <AttendanceSheet
+          idMateriaPorGrupo={selectedCourseId}
+          onBack={() => setActiveScreen('P11')}
+        />
       )}
     </MainLayout>
+  );
+}
+
+export function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

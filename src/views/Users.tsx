@@ -4,13 +4,11 @@ import { UserTable } from '../components/users/UserTable';
 import type { UserItem } from '../components/users/UserTable';
 import { UserDrawer } from '../components/users/UserDrawer';
 
-export const Pantalla03UsuariosDocentes: React.FC = () => {
-  // Estados de filtros
+export const Users: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [selectedDirection, setSelectedDirection] = useState<string>('');
 
-  // Estado del Slide-over Drawer lateral
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [editingUser, setEditingUser] = useState<UserItem | null>(null);
 
@@ -26,7 +24,6 @@ export const Pantalla03UsuariosDocentes: React.FC = () => {
 
   return (
     <>
-      {/* Cabecera Superior */}
       <header className="h-16 bg-[#FFFFFF] border-b border-slate-200 px-6 flex items-center justify-between gap-4 shrink-0">
         <div className="text-left">
           <h1 className="text-lg sm:text-xl font-bold text-[#0F172A] leading-tight">
@@ -38,9 +35,7 @@ export const Pantalla03UsuariosDocentes: React.FC = () => {
         </div>
       </header>
 
-      {/* Contenido Principal de Usuarios */}
       <main className="flex-1 p-6 space-y-4 max-w-[1600px] w-full mx-auto overflow-y-auto">
-        {/* Barra de Filtros y Búsqueda */}
         <UserFilters
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
@@ -51,11 +46,9 @@ export const Pantalla03UsuariosDocentes: React.FC = () => {
           onOpenCreateDrawer={handleOpenCreateDrawer}
         />
 
-        {/* Tabla de Usuarios (Estado Limpio / Plantilla) */}
         <UserTable onEditUser={handleOpenEditDrawer} />
       </main>
 
-      {/* Slide-over Drawer Lateral (Creación / Edición) */}
       <UserDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
@@ -65,4 +58,4 @@ export const Pantalla03UsuariosDocentes: React.FC = () => {
   );
 };
 
-export default Pantalla03UsuariosDocentes;
+export default Users;
