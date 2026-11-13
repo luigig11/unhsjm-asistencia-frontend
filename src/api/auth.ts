@@ -79,6 +79,51 @@ export interface RefreshResponseDto {
   expires_in: number;
 }
 
+export interface UsuarioItemDto {
+  id: string;
+  id_user?: string | null;
+  id_rol: string;
+  rol_nombre: string;
+  cedula?: string | null;
+  nombre: string;
+  apellido: string;
+  genero: 'F' | 'M';
+  fecha_nacimiento?: string | null;
+  activo: boolean;
+  tiene_perfil_docente: boolean;
+  id_docente?: string | null;
+}
+
+export interface PagedUsuariosResult {
+  total: number;
+  items: UsuarioItemDto[];
+}
+
+export interface UsuarioFilterParams {
+  search?: string;
+  id_rol?: string;
+  activo?: boolean;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface UpdateUsuarioDto {
+  id_rol: string;
+  cedula?: string;
+  nombre: string;
+  apellido: string;
+  genero: string;
+  fecha_nacimiento?: string;
+  activo: boolean;
+}
+
+export interface RolItemDto {
+  id: string;
+  code: string;
+  nombre: string;
+  activo: boolean;
+}
+
 export const login = async (data: LoginRequestDto): Promise<AuthResponseDto> => {
   const response = await apiClient.post<AuthResponseDto>('/auth/login', data);
   if (response.accessToken) {
@@ -125,4 +170,24 @@ export const getUsuarioLocal = (): UsuarioSesionDto | null => {
   } catch {
     return null;
   }
+};
+
+export const listarUsuarios = (params?: UsuarioFilterParams): Promise<PagedUsuariosResult> => {
+  return apiClient.get<PagedUsuariosResult>('/usuarios', params);
+};
+
+export const obtenerUsuarioPorId = (id: string): Promise<unknown> => {
+  return apiClient.get(`/usuarios/${id}`);
+};
+
+export const actualizarUsuario = (id: string, data: UpdateUsuarioDto): Promise<unknown> => {
+  return apiClient.put(`/usuarios/${id}`, data);
+};
+
+export const eliminarUsuario = (id: string): Promise<void> => {
+  return apiClient.delete<void>(`/usuarios/${id}`);
+};
+
+export const listarRoles = (params?: { activo?: boolean }): Promise<RolItemDto[]> => {
+  return apiClient.get<RolItemDto[]>('/roles', params);
 };
