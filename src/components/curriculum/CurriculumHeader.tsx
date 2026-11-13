@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeftIcon, KanbanIcon } from '../common/Icons';
+import { ArrowLeftIcon } from '../common/Icons';
 
 interface CurriculumHeaderProps {
   planCodigo: string;

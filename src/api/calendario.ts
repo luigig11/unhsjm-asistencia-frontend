@@ -209,20 +209,40 @@ export const listarPeriodosEscolares = (params?: PeriodoEscolarFilterParams): Pr
   return apiClient.get<PeriodoEscolarDto[]>('/periodos-escolares', params);
 };
 
+export const crearPeriodoEscolar = (data: CreatePeriodoEscolarDto): Promise<PeriodoEscolarDto> => {
+  return apiClient.post<PeriodoEscolarDto>('/periodos-escolares', data);
+};
+
 export const listarFeriados = (params?: FeriadoFilterParams): Promise<FeriadoDto[]> => {
   return apiClient.get<FeriadoDto[]>('/feriados', params);
+};
+
+export const crearFeriado = (data: CreateFeriadoDto): Promise<FeriadoDto> => {
+  return apiClient.post<FeriadoDto>('/feriados', data);
 };
 
 export const listarInstanciasAcademicas = (params?: InstanciaAcademicaFilterParams): Promise<InstanciaAcademicaDto[]> => {
   return apiClient.get<InstanciaAcademicaDto[]>('/instancias-academicas', params);
 };
 
+export const crearInstanciaAcademica = (data: CreateInstanciaDto): Promise<InstanciaAcademicaDto> => {
+  return apiClient.post<InstanciaAcademicaDto>('/instancias-academicas', data);
+};
+
 export const listarGrupos = (params?: GrupoFilterParams): Promise<GrupoDto[]> => {
   return apiClient.get<GrupoDto[]>('/grupos', params);
 };
 
+export const crearGrupo = (data: CreateGrupoDto): Promise<GrupoDto> => {
+  return apiClient.post<GrupoDto>('/grupos', data);
+};
+
 export const listarMateriasPorGrupo = (params?: MateriaPorGrupoFilterParams): Promise<MateriaPorGrupoDto[]> => {
   return apiClient.get<MateriaPorGrupoDto[]>('/materias-por-grupo', params);
+};
+
+export const crearMateriaPorGrupo = (data: CreateMateriaPorGrupoDto): Promise<MateriaPorGrupoDto> => {
+  return apiClient.post<MateriaPorGrupoDto>('/materias-por-grupo', data);
 };
 
 export const listarCalendarioSemanal = (params: CalendarioSemanalFilterParams): Promise<CalendarioSemanalDto[]> => {

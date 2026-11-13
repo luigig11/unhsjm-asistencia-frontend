@@ -74,7 +74,12 @@ function AppContent() {
         />
       )}
       {activeScreen === 'academic-period' && <AcademicPeriod />}
-      {activeScreen === 'academic-offering' && <AcademicOffering />}
+      {activeScreen === 'academic-offering' && (
+        <AcademicOffering
+          onNavigateToSchedule={() => setActiveScreen('schedule-planner')}
+          onNavigateToEnrollment={() => setActiveScreen('student-enrollment')}
+        />
+      )}
       {activeScreen === 'schedule-planner' && <SchedulePlanner />}
       {activeScreen === 'student-enrollment' && <StudentEnrollment />}
       {activeScreen === 'teacher-portal' && (

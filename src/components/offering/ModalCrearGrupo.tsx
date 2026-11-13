@@ -4,32 +4,40 @@ import { CloseIcon } from '../common/Icons';
 interface ModalCrearGrupoProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (groupData: { codigo: string; nombre: string; cupo: number }) => void;
+  onSave: (groupData: { codigo: string; nombre: string; cupo: number }) => Promise<void> | void;
+  isSaving?: boolean;
 }
 
 export const ModalCrearGrupo: React.FC<ModalCrearGrupoProps> = ({
   isOpen,
   onClose,
   onSave,
+  isSaving = false,
 }) => {
   const [codigo, setCodigo] = useState('');
   const [nombre, setNombre] = useState('');
   const [cupo, setCupo] = useState('35');
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!codigo.trim() || !nombre.trim() || Number(cupo) <= 0) return;
-    onSave({
-      codigo: codigo.trim(),
-      nombre: nombre.trim(),
-      cupo: Number(cupo),
-    });
-    setCodigo('');
-    setNombre('');
-    setCupo('35');
-    onClose();
+    setError(null);
+    try {
+      await onSave({
+        codigo: codigo.trim(),
+        nombre: nombre.trim(),
+        cupo: Number(cupo),
+      });
+      setCodigo('');
+      setNombre('');
+      setCupo('35');
+      onClose();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al guardar el grupo');
+    }
   };
 
   return (
@@ -40,11 +48,18 @@ export const ModalCrearGrupo: React.FC<ModalCrearGrupoProps> = ({
           <button
             type="button"
             onClick={onClose}
+            disabled={isSaving}
             className="p-1 rounded-md text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F1F5F9] cursor-pointer"
           >
             <CloseIcon className="w-4 h-4" />
           </button>
         </div>
+
+        {error && (
+          <div className="mx-5 mt-4 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-md">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="p-5 space-y-3.5 text-xs">
           <div className="space-y-1">
@@ -94,15 +109,17 @@ export const ModalCrearGrupo: React.FC<ModalCrearGrupoProps> = ({
             <button
               type="button"
               onClick={onClose}
+              disabled={isSaving}
               className="px-3.5 py-1.5 border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-md text-[#475569] font-medium transition-colors cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-3.5 py-1.5 bg-[#0F3C6E] hover:bg-[#0A294D] text-white rounded-md font-semibold transition-colors cursor-pointer shadow-xs"
+              disabled={isSaving}
+              className="px-3.5 py-1.5 bg-[#0F3C6E] hover:bg-[#0A294D] text-white rounded-md font-semibold transition-colors cursor-pointer shadow-xs disabled:opacity-50"
             >
-              Guardar Grupo
+              {isSaving ? 'Guardando...' : 'Guardar Grupo'}
             </button>
           </div>
         </form>
