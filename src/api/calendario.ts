@@ -236,3 +236,11 @@ export const listarSesionesCalendario = (params?: SesionCalendarioFilterParams):
 export const listarInscripcionesPorCurso = (params: InscripcionGrupoFilterParams): Promise<InscripcionGrupoDto[]> => {
   return apiClient.get<InscripcionGrupoDto[]>('/inscripciones-grupo', params);
 };
+
+export const crearInscripcionGrupo = (data: CreateInscripcionGrupoDto): Promise<InscripcionGrupoDto> => {
+  return apiClient.post<InscripcionGrupoDto>('/inscripciones-grupo', data);
+};
+
+export const eliminarInscripcionGrupo = (id: string): Promise<void> => {
+  return apiClient.delete<void>(`/inscripciones-grupo/${id}`);
+};

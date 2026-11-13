@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface Group {
-  id: number;
+  id: string;
   materia: string;
   codigoMateria: string;
   grupo: string;
@@ -12,8 +12,8 @@ export interface Group {
 
 interface EnrollmentHeaderProps {
   groups: Group[];
-  selectedGroupId: number;
-  onSelectGroup: (groupId: number) => void;
+  selectedGroupId: string;
+  onSelectGroup: (groupId: string) => void;
   selectedGroup: Group;
   occupied: number;
   available: number;
@@ -30,8 +30,7 @@ export const EnrollmentHeader: React.FC<EnrollmentHeaderProps> = ({
   percentage,
 }) => {
   return (
-    <div className="space-y-4">
-      {/* Título de la página */}
+    <div className="space-y-4 text-left">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[#E2E8F0] pb-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#0F172A]">
@@ -42,18 +41,18 @@ export const EnrollmentHeader: React.FC<EnrollmentHeaderProps> = ({
           </p>
         </div>
 
-        {/* Selector de Grupo */}
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <label className="text-xs font-semibold text-[#475569]">
+          <label htmlFor="select-grupo-enrollment" className="text-xs font-semibold text-[#475569]">
             Grupo:
           </label>
           <select
+            id="select-grupo-enrollment"
             value={selectedGroupId}
-            onChange={(e) => onSelectGroup(Number(e.target.value))}
+            onChange={(e) => onSelectGroup(e.target.value)}
             className="h-9 px-3 text-xs bg-white border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
           >
             {groups.length === 0 ? (
-              <option value={0}>Sin grupos registrados</option>
+              <option value="">Sin grupos registrados</option>
             ) : (
               groups.map((g) => (
                 <option key={g.id} value={g.id}>
@@ -65,9 +64,8 @@ export const EnrollmentHeader: React.FC<EnrollmentHeaderProps> = ({
         </div>
       </div>
 
-      {/* Tarjeta de Información del Grupo y Barra de Cupo */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-        <div className="lg:col-span-5 bg-white border border-[#E2E8F0] rounded-lg p-4 text-left space-y-2">
+        <div className="lg:col-span-5 bg-white border border-[#E2E8F0] rounded-lg p-4 text-left space-y-2 shadow-sm">
           <span className="font-mono text-xs font-bold text-[#0F3C6E] bg-[#EBF3FC] px-2 py-0.5 rounded border border-[#1D63B8]/20">
             {selectedGroup.codigoMateria || 'N/A'}
           </span>
@@ -80,7 +78,7 @@ export const EnrollmentHeader: React.FC<EnrollmentHeaderProps> = ({
           </div>
         </div>
 
-        <div className="lg:col-span-7 bg-white border border-[#E2E8F0] rounded-lg p-4 text-left flex flex-col justify-between space-y-3">
+        <div className="lg:col-span-7 bg-white border border-[#E2E8F0] rounded-lg p-4 text-left flex flex-col justify-between space-y-3 shadow-sm">
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold text-[#0F172A]">Ocupación del Grupo</span>
             <span className="font-mono font-bold text-[#0F3C6E]">
@@ -98,14 +96,8 @@ export const EnrollmentHeader: React.FC<EnrollmentHeaderProps> = ({
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-[#64748B]">
-            <span>{percentage.toFixed(0)}% ocupado</span>
-            <span
-              className={`font-semibold ${
-                available === 0 ? 'text-[#C81E2B]' : 'text-[#15803D]'
-              }`}
-            >
-              {available === 0 ? 'Cupo agotado' : `${available} cupos libres`}
-            </span>
+            <span>Disponibles: <strong className="text-[#0F172A]">{available}</strong></span>
+            <span>Porcentaje: <strong className="text-[#0F172A]">{Math.round(percentage)}%</strong></span>
           </div>
         </div>
       </div>

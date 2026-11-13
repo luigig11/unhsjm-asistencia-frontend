@@ -17,40 +17,40 @@ import { AttendanceSheet } from './views/AttendanceSheet';
 
 import { MainLayout } from './components/layout/MainLayout';
 
-type ActiveScreen =
-  | 'P01'
-  | 'P02'
-  | 'P03'
-  | 'P04'
-  | 'P05'
-  | 'P06'
-  | 'P07'
-  | 'P08'
-  | 'P09'
-  | 'P10'
-  | 'P11'
-  | 'P12'
-  | 'P13';
+export type ActiveScreen =
+  | 'login'
+  | 'dashboard'
+  | 'users'
+  | 'catalogs'
+  | 'academic-plans'
+  | 'curriculum-design'
+  | 'academic-period'
+  | 'academic-offering'
+  | 'schedule-planner'
+  | 'student-enrollment'
+  | 'teacher-portal'
+  | 'attendance-record'
+  | 'attendance-sheet';
 
 function AppContent() {
   const { isAuthenticated, logout } = useAuth();
-  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('P01');
+  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('login');
   const [selectedSessionId, setSelectedSessionId] = useState<string>('');
   const [selectedCourseId, setSelectedCourseId] = useState<string>('');
 
   const handleNavigate = async (key: string) => {
-    if (key === 'P01') {
+    if (key === 'login') {
       await logout();
-      setActiveScreen('P01');
+      setActiveScreen('login');
       return;
     }
     setActiveScreen(key as ActiveScreen);
   };
 
-  if (!isAuthenticated || activeScreen === 'P01') {
+  if (!isAuthenticated || activeScreen === 'login') {
     return (
       <Login
-        onLoginSuccess={() => setActiveScreen('P02')}
+        onLoginSuccess={() => setActiveScreen('dashboard')}
       />
     );
   }
@@ -60,46 +60,46 @@ function AppContent() {
       onNavigate={handleNavigate}
       activeScreen={activeScreen}
     >
-      {activeScreen === 'P02' && <Dashboard />}
-      {activeScreen === 'P03' && <Users />}
-      {activeScreen === 'P04' && <Catalogs />}
-      {activeScreen === 'P05' && (
+      {activeScreen === 'dashboard' && <Dashboard />}
+      {activeScreen === 'users' && <Users />}
+      {activeScreen === 'catalogs' && <Catalogs />}
+      {activeScreen === 'academic-plans' && (
         <AcademicPlans
-          onNavigateToMalla={() => setActiveScreen('P06')}
+          onNavigateToMalla={() => setActiveScreen('curriculum-design')}
         />
       )}
-      {activeScreen === 'P06' && (
+      {activeScreen === 'curriculum-design' && (
         <CurriculumDesign
-          onBackToPlans={() => setActiveScreen('P05')}
+          onBackToPlans={() => setActiveScreen('academic-plans')}
         />
       )}
-      {activeScreen === 'P07' && <AcademicPeriod />}
-      {activeScreen === 'P08' && <AcademicOffering />}
-      {activeScreen === 'P09' && <SchedulePlanner />}
-      {activeScreen === 'P10' && <StudentEnrollment />}
-      {activeScreen === 'P11' && (
+      {activeScreen === 'academic-period' && <AcademicPeriod />}
+      {activeScreen === 'academic-offering' && <AcademicOffering />}
+      {activeScreen === 'schedule-planner' && <SchedulePlanner />}
+      {activeScreen === 'student-enrollment' && <StudentEnrollment />}
+      {activeScreen === 'teacher-portal' && (
         <TeacherPortal
           onNavigateToAttendance={(sessionId, courseId) => {
             setSelectedSessionId(sessionId);
             if (courseId) setSelectedCourseId(courseId);
-            setActiveScreen('P12');
+            setActiveScreen('attendance-record');
           }}
         />
       )}
-      {activeScreen === 'P12' && (
+      {activeScreen === 'attendance-record' && (
         <AttendanceRecord
           sessionId={selectedSessionId}
-          onBack={() => setActiveScreen('P11')}
+          onBack={() => setActiveScreen('teacher-portal')}
           onNavigateToSheet={(courseId) => {
             if (courseId) setSelectedCourseId(courseId);
-            setActiveScreen('P13');
+            setActiveScreen('attendance-sheet');
           }}
         />
       )}
-      {activeScreen === 'P13' && (
+      {activeScreen === 'attendance-sheet' && (
         <AttendanceSheet
           idMateriaPorGrupo={selectedCourseId}
-          onBack={() => setActiveScreen('P11')}
+          onBack={() => setActiveScreen('teacher-portal')}
         />
       )}
     </MainLayout>

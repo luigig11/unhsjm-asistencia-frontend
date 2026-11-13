@@ -2,8 +2,9 @@ import React from 'react';
 import { SearchIcon } from '../../components/common/Icons';
 
 export interface Student {
-  id: number;
+  id: string;
   codigo_unico: string;
+  carnet?: string;
   nombre: string;
   carrera: string;
   activo: boolean;
@@ -18,6 +19,7 @@ interface StudentSearchSectionProps {
   onEnroll: () => void;
   feedback: string;
   isAvailable: boolean;
+  loading?: boolean;
 }
 
 export const StudentSearchSection: React.FC<StudentSearchSectionProps> = ({
@@ -29,15 +31,16 @@ export const StudentSearchSection: React.FC<StudentSearchSectionProps> = ({
   onEnroll,
   feedback,
   isAvailable,
+  loading = false,
 }) => {
   return (
-    <section className="bg-white border border-[#E2E8F0] rounded-lg p-4 sm:p-5 text-left space-y-4">
+    <section className="bg-white border border-[#E2E8F0] rounded-lg p-4 sm:p-5 text-left space-y-4 shadow-sm">
       <div>
         <h3 className="text-sm font-bold text-[#0F172A]">
           Inscribir Estudiante
         </h3>
         <p className="text-xs text-[#64748B] mt-0.5">
-          Busca por nombre o código único (CETEC) para matricularlo con un clic
+          Busca por nombre, carnet o código único (CETEC) para matricularlo con un clic
         </p>
       </div>
 
@@ -54,12 +57,11 @@ export const StudentSearchSection: React.FC<StudentSearchSectionProps> = ({
               type="text"
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Escribe el nombre o código único..."
+              placeholder="Escribe el nombre, carnet o código único..."
               className="w-full pl-9 pr-3 py-2 text-xs bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1D63B8]"
             />
           </div>
 
-          {/* Menú desplegable con sugerencias de autocompletado */}
           {suggestions.length > 0 && (
             <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-[#CBD5E1] rounded-md shadow-md z-20 max-h-48 overflow-y-auto divide-y divide-[#E2E8F0]">
               {suggestions.map((student) => (
@@ -71,7 +73,7 @@ export const StudentSearchSection: React.FC<StudentSearchSectionProps> = ({
                 >
                   <p className="font-bold text-[#0F172A]">{student.nombre}</p>
                   <p className="font-mono text-[11px] text-[#64748B]">
-                    {student.codigo_unico} · {student.carrera}
+                    {student.codigo_unico} {student.carnet ? `· Carnet: ${student.carnet}` : ''} · {student.carrera}
                   </p>
                 </button>
               ))}
@@ -82,18 +84,17 @@ export const StudentSearchSection: React.FC<StudentSearchSectionProps> = ({
         <button
           type="button"
           onClick={onEnroll}
-          disabled={!selectedStudent || !isAvailable}
+          disabled={!selectedStudent || !isAvailable || loading}
           className={`h-9 px-4 rounded-md text-xs font-semibold transition-colors shadow-xs cursor-pointer ${
-            selectedStudent && isAvailable
+            selectedStudent && isAvailable && !loading
               ? 'bg-[#0F3C6E] hover:bg-[#0A294D] text-white'
               : 'bg-[#F1F5F9] text-[#94A3B8] cursor-not-allowed border border-[#CBD5E1]'
           }`}
         >
-          Confirmar Inscripción
+          {loading ? 'Inscribiendo...' : 'Confirmar Inscripción'}
         </button>
       </div>
 
-      {/* Tarjeta de estudiante seleccionado */}
       {selectedStudent && (
         <div className="p-3 bg-[#EBF3FC]/60 border border-[#1D63B8]/30 rounded-md text-xs flex items-center justify-between gap-3">
           <div>
@@ -102,7 +103,7 @@ export const StudentSearchSection: React.FC<StudentSearchSectionProps> = ({
             </span>
             <p className="font-bold text-[#0F172A]">{selectedStudent.nombre}</p>
             <p className="font-mono text-[11px] text-[#475569]">
-              Código: {selectedStudent.codigo_unico} · {selectedStudent.carrera}
+              Código: {selectedStudent.codigo_unico} {selectedStudent.carnet ? `· Carnet: ${selectedStudent.carnet}` : ''} · {selectedStudent.carrera}
             </p>
           </div>
           <span className="text-[10px] font-semibold text-[#15803D] bg-[#DCFCE7] px-2 py-0.5 rounded border border-[#86EFAC]">
@@ -111,11 +112,10 @@ export const StudentSearchSection: React.FC<StudentSearchSectionProps> = ({
         </div>
       )}
 
-      {/* Alerta de feedback */}
       {feedback && (
         <div
           className={`p-2.5 rounded-md text-xs border ${
-            feedback.includes('registrada')
+            feedback.includes('registrada') || feedback.includes('éxito')
               ? 'bg-[#DCFCE7] text-[#15803D] border-[#86EFAC]'
               : 'bg-[#FEF3C7] text-[#B45309] border-[#FCD34D]'
           }`}

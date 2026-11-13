@@ -20,7 +20,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   collapsed,
   onToggleCollapse,
   onNavigate,
-  activeScreen = 'P02',
+  activeScreen = 'dashboard',
 }) => {
   const { user, logout } = useAuth();
 
@@ -31,7 +31,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
   const handleLogout = async () => {
     await logout();
-    onNavigate?.('P01');
+    onNavigate?.('login');
   };
 
   return (
@@ -98,9 +98,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
           <button
             type="button"
-            onClick={() => onNavigate?.('P02')}
+            onClick={() => onNavigate?.('dashboard')}
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P02'
+              activeScreen === 'dashboard'
                 ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                 : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
             } ${collapsed ? 'justify-center' : ''}`}
@@ -120,9 +120,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
               <button
                 type="button"
-                onClick={() => onNavigate?.('P03')}
+                onClick={() => onNavigate?.('users')}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-                  activeScreen === 'P03'
+                  activeScreen === 'users'
                     ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                     : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
                 } ${collapsed ? 'justify-center' : ''}`}
@@ -135,9 +135,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
               {isAdmin && (
                 <button
                   type="button"
-                  onClick={() => onNavigate?.('P04')}
+                  onClick={() => onNavigate?.('catalogs')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-                    activeScreen === 'P04'
+                    activeScreen === 'catalogs'
                       ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                       : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
                   } ${collapsed ? 'justify-center' : ''}`}
@@ -158,9 +158,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
               <button
                 type="button"
-                onClick={() => onNavigate?.('P05')}
+                onClick={() => onNavigate?.('academic-plans')}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-                  activeScreen === 'P05'
+                  activeScreen === 'academic-plans'
                     ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                     : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
                 } ${collapsed ? 'justify-center' : ''}`}
@@ -172,9 +172,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
               <button
                 type="button"
-                onClick={() => onNavigate?.('P06')}
+                onClick={() => onNavigate?.('curriculum-design')}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-                  activeScreen === 'P06'
+                  activeScreen === 'curriculum-design'
                     ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                     : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
                 } ${collapsed ? 'justify-center' : ''}`}
@@ -192,9 +192,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
               <button
                 type="button"
-                onClick={() => onNavigate?.('P07')}
+                onClick={() => onNavigate?.('academic-period')}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-                  activeScreen === 'P07'
+                  activeScreen === 'academic-period'
                     ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                     : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
                 } ${collapsed ? 'justify-center' : ''}`}
@@ -208,9 +208,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
               <button
                 type="button"
-                onClick={() => onNavigate?.('P08')}
+                onClick={() => onNavigate?.('academic-offering')}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-                  activeScreen === 'P08'
+                  activeScreen === 'academic-offering'
                     ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                     : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
                 } ${collapsed ? 'justify-center' : ''}`}
@@ -223,9 +223,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
               {isAdmin && (
                 <button
                   type="button"
-                  onClick={() => onNavigate?.('P09')}
+                  onClick={() => onNavigate?.('schedule-planner')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-                    activeScreen === 'P09'
+                    activeScreen === 'schedule-planner'
                       ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                       : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
                   } ${collapsed ? 'justify-center' : ''}`}
@@ -240,9 +240,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
               <button
                 type="button"
-                onClick={() => onNavigate?.('P10')}
+                onClick={() => onNavigate?.('student-enrollment')}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-                  activeScreen === 'P10'
+                  activeScreen === 'student-enrollment'
                     ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                     : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
                 } ${collapsed ? 'justify-center' : ''}`}
@@ -264,9 +264,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
           <button
             type="button"
-            onClick={() => onNavigate?.('P11')}
+            onClick={() => onNavigate?.('teacher-portal')}
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P11'
+              activeScreen === 'teacher-portal'
                 ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                 : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
             } ${collapsed ? 'justify-center' : ''}`}
@@ -278,9 +278,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
           <button
             type="button"
-            onClick={() => onNavigate?.('P12')}
+            onClick={() => onNavigate?.('attendance-record')}
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P12'
+              activeScreen === 'attendance-record'
                 ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                 : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
             } ${collapsed ? 'justify-center' : ''}`}
@@ -294,9 +294,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
           <button
             type="button"
-            onClick={() => onNavigate?.('P13')}
+            onClick={() => onNavigate?.('attendance-sheet')}
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
-              activeScreen === 'P13'
+              activeScreen === 'attendance-sheet'
                 ? 'bg-[#0A294D] text-white border-[#1D63B8]'
                 : 'text-[#EBF3FC]/90 hover:bg-[#0A294D] hover:text-white border-transparent'
             } ${collapsed ? 'justify-center' : ''}`}
@@ -318,26 +318,25 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                 {user ? `${user.nombre} ${user.apellido}` : 'Usuario Activo'}
               </p>
               <p className="text-[10px] uppercase font-bold text-[#93C5FD] tracking-wide">
-                {user?.rolCode || 'UNHSJM'}
+                {isDocente ? 'Docente' : isDirector ? 'Director' : 'Administrador'}
               </p>
             </div>
-
             <button
               type="button"
               onClick={handleLogout}
-              className="px-2.5 py-1 rounded text-[11px] font-medium bg-[#0A294D] hover:bg-[#C81E2B] text-white border border-[#1D63B8] hover:border-[#C81E2B] transition-colors cursor-pointer"
+              className="px-2 py-1 text-[11px] font-semibold text-rose-200 hover:text-white bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/40 rounded transition-colors cursor-pointer"
             >
-              Cerrar sesión
+              Salir
             </button>
           </div>
         ) : (
           <button
             type="button"
             onClick={handleLogout}
-            className="w-full py-1.5 rounded text-xs font-mono bg-[#0A294D] hover:bg-[#C81E2B] text-white cursor-pointer"
+            className="w-full py-1 text-[10px] font-bold text-rose-200 hover:text-white bg-rose-950/40 hover:bg-rose-900/60 rounded"
             title="Cerrar sesión"
           >
-            ←
+            Salir
           </button>
         )}
       </div>
