@@ -1,64 +1,96 @@
-import React, { useState } from 'react';
-import { CloseIcon, ChevronDownIcon } from '../common/Icons';
-import { Button } from '../common/Button';
-import type { PlanAcademicoItem } from './PlanCard';
+import React, { useState, useEffect } from 'react';
+import { CloseIcon } from '../common/Icons';
+import { Button, Input, Select } from '../common';
+import type { CreatePlanAcademicoDto } from '../../api/planAcademico';
+import type {
+  CarreraDto,
+  CentroUniversitarioDto,
+  ModalidadDto,
+  TipoPeriodoAcademicoDto,
+} from '../../api/catalogos';
 
 interface ModalPlanAcademicoProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (newPlan: PlanAcademicoItem) => void;
+  onSave: (newPlan: CreatePlanAcademicoDto) => Promise<void> | void;
+  carreras: CarreraDto[];
+  centros: CentroUniversitarioDto[];
+  modalidades: ModalidadDto[];
+  tiposPeriodo: TipoPeriodoAcademicoDto[];
+  isSaving?: boolean;
 }
 
 export const ModalPlanAcademico: React.FC<ModalPlanAcademicoProps> = ({
   isOpen,
   onClose,
   onSave,
+  carreras,
+  centros,
+  modalidades,
+  tiposPeriodo,
+  isSaving = false,
 }) => {
   const [codigo, setCodigo] = useState('');
   const [nombre, setNombre] = useState('');
-  const [carrera, setCarrera] = useState('');
-  const [direccion, setDireccion] = useState('');
-  const [modalidad, setModalidad] = useState('Regular / Diurna');
-  const [tipoPeriodo, setTipoPeriodo] = useState('Trimestre');
+  const [idCarrera, setIdCarrera] = useState('');
+  const [idCentro, setIdCentro] = useState('');
+  const [idModalidad, setIdModalidad] = useState('');
+  const [idTipoPeriodo, setIdTipoPeriodo] = useState('');
   const [cantidadCiclos, setCantidadCiclos] = useState<number>(5);
   const [cantidadPeriodos, setCantidadPeriodos] = useState<number>(15);
-  const [activoDesde, setActivoDesde] = useState('');
-  const [activoHasta, setActivoHasta] = useState('');
+  const [activoDesde, setActivoDesde] = useState('2026-01-01');
+  const [activoHasta, setActivoHasta] = useState('2030-12-31');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setError(null);
+    setIdCarrera(carreras[0]?.id || '');
+    setIdCentro(centros[0]?.id || '');
+    setIdModalidad(modalidades[0]?.id || '');
+    setIdTipoPeriodo(tiposPeriodo[0]?.id || '');
+    setCodigo('');
+    setNombre('');
+    setCantidadCiclos(5);
+    setCantidadPeriodos(15);
+    setActivoDesde('2026-01-01');
+    setActivoHasta('2030-12-31');
+  }, [isOpen, carreras, centros, modalidades, tiposPeriodo]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!codigo.trim() || !carrera.trim()) return;
+    setError(null);
 
-    const newPlan: PlanAcademicoItem = {
-      id: `plan-${Date.now()}`,
-      codigo: codigo.trim(),
-      nombre: nombre.trim() || `Plan Curricular ${codigo.trim()}`,
-      carrera: carrera.trim(),
-      direccion: direccion.trim() || 'Dirección Académica',
-      modalidad,
-      tipo_periodo: tipoPeriodo,
-      cantidad_ciclo_academico: Number(cantidadCiclos) || 5,
-      cantidad_periodo_academico: Number(cantidadPeriodos) || 15,
-      activo_desde: activoDesde || '2026-01-01',
-      activo_hasta: activoHasta || '2030-12-31',
-      activo: true,
-      total_asignaturas: 0,
-    };
+    if (!codigo.trim() || !idCarrera || !idModalidad || !idTipoPeriodo) {
+      setError('Por favor complete los campos obligatorios.');
+      return;
+    }
 
-    onSave(newPlan);
-    setCodigo('');
-    setNombre('');
-    setCarrera('');
-    setDireccion('');
-    onClose();
+    try {
+      await onSave({
+        codigo: codigo.trim().toUpperCase(),
+        nombre: nombre.trim() || `Plan Curricular ${codigo.trim()}`,
+        idCarrera,
+        idCentroUniversitario: idCentro || centros[0]?.id || '00000000-0000-0000-0000-000000000000',
+        idModalidad,
+        idTipoPeriodoAcademico: idTipoPeriodo,
+        cantidadCicloAcademico: Number(cantidadCiclos) || 5,
+        cantidadPeriodoAcademico: Number(cantidadPeriodos) || 15,
+        activoDesde: activoDesde ? `${activoDesde}T00:00:00Z` : '2026-01-01T00:00:00Z',
+        activoHasta: activoHasta ? `${activoHasta}T23:59:59Z` : null,
+        activo: true,
+      });
+      onClose();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al guardar el plan académico.');
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
       <div className="bg-white border border-[#E2E8F0] rounded-lg max-w-lg w-full text-left shadow-none overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Cabecera */}
         <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between">
           <div>
             <h3 className="text-sm font-bold text-[#0F172A]">
@@ -74,157 +106,131 @@ export const ModalPlanAcademico: React.FC<ModalPlanAcademicoProps> = ({
             size="xs"
             icon={<CloseIcon className="w-4 h-4" />}
             onClick={onClose}
+            disabled={isSaving}
             className="text-[#94A3B8] hover:text-[#0F172A]"
           />
         </div>
 
-        {/* Formulario */}
+        {error && (
+          <div className="mx-5 mt-4 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-md">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="p-5 space-y-3.5 text-xs overflow-y-auto flex-1">
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Código del Plan <span className="text-[#C81E2B]">*</span>
-              </label>
-              <input
-                type="text"
-                value={codigo}
-                onChange={(e) => setCodigo(e.target.value)}
-                placeholder="Ej. ISI-2026"
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8]"
-                required
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Modalidad <span className="text-[#C81E2B]">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={modalidad}
-                  onChange={(e) => setModalidad(e.target.value)}
-                  className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
-                >
-                  <option value="Regular / Diurna">Regular / Diurna</option>
-                  <option value="Sabatina">Sabatina</option>
-                  <option value="Dominical">Dominical</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
-                  <ChevronDownIcon className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">
-              Carrera <span className="text-[#C81E2B]">*</span>
-            </label>
-            <input
-              type="text"
-              value={carrera}
-              onChange={(e) => setCarrera(e.target.value)}
-              placeholder="Ej. Ingeniería en Sistemas de Información"
-              className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8]"
+            <Input
+              label="Código del Plan"
               required
+              value={codigo}
+              onChange={(e) => setCodigo(e.target.value)}
+              placeholder="Ej. ISI-2026"
             />
+
+            <Select
+              label="Modalidad"
+              required
+              value={idModalidad}
+              onChange={(e) => setIdModalidad(e.target.value)}
+            >
+              {modalidades.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.nombre}
+                </option>
+              ))}
+            </Select>
           </div>
 
-          <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">
-              Dirección Académica
-            </label>
-            <input
-              type="text"
-              value={direccion}
-              onChange={(e) => setDireccion(e.target.value)}
-              placeholder="Ej. Tecnología e Informática"
-              className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8]"
-            />
-          </div>
+          <Input
+            label="Nombre descriptivo del Plan"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            placeholder="Ej. Plan Curricular de Ingeniería en Sistemas 2026"
+          />
 
-          <div className="grid grid-cols-3 gap-3">
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Tipo Período
-              </label>
-              <div className="relative">
-                <select
-                  value={tipoPeriodo}
-                  onChange={(e) => setTipoPeriodo(e.target.value)}
-                  className="w-full appearance-none px-2.5 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
-                >
-                  <option value="Trimestre">Trimestre</option>
-                  <option value="Semestre">Semestre</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-1.5 flex items-center pointer-events-none text-[#475569]">
-                  <ChevronDownIcon className="w-3 h-3" />
-                </div>
-              </div>
-            </div>
+          <Select
+            label="Carrera Curricular"
+            required
+            value={idCarrera}
+            onChange={(e) => setIdCarrera(e.target.value)}
+          >
+            {carreras.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.nombre} ({c.codigo})
+              </option>
+            ))}
+          </Select>
 
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Ciclos (Años)
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={10}
-                value={cantidadCiclos}
-                onChange={(e) => setCantidadCiclos(Number(e.target.value))}
-                className="w-full px-2.5 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8]"
-              />
-            </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Select
+              label="Centro Universitario"
+              value={idCentro}
+              onChange={(e) => setIdCentro(e.target.value)}
+            >
+              {centros.map((cen) => (
+                <option key={cen.id} value={cen.id}>
+                  {cen.nombre}
+                </option>
+              ))}
+            </Select>
 
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Bloques Totales
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={30}
-                value={cantidadPeriodos}
-                onChange={(e) => setCantidadPeriodos(Number(e.target.value))}
-                className="w-full px-2.5 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8]"
-              />
-            </div>
+            <Select
+              label="Tipo de Período"
+              required
+              value={idTipoPeriodo}
+              onChange={(e) => setIdTipoPeriodo(e.target.value)}
+            >
+              {tiposPeriodo.map((tp) => (
+                <option key={tp.id} value={tp.id}>
+                  {tp.nombre}
+                </option>
+              ))}
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Vigencia Desde
-              </label>
-              <input
-                type="date"
-                value={activoDesde}
-                onChange={(e) => setActivoDesde(e.target.value)}
-                className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8]"
-              />
-            </div>
+            <Input
+              label="Años / Ciclos Totales"
+              type="number"
+              min={1}
+              max={10}
+              value={cantidadCiclos}
+              onChange={(e) => setCantidadCiclos(Number(e.target.value))}
+            />
 
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Vigencia Hasta
-              </label>
-              <input
-                type="date"
-                value={activoHasta}
-                onChange={(e) => setActivoHasta(e.target.value)}
-                className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8]"
-              />
-            </div>
+            <Input
+              label="Períodos / Trimestres Totales"
+              type="number"
+              min={1}
+              max={30}
+              value={cantidadPeriodos}
+              onChange={(e) => setCantidadPeriodos(Number(e.target.value))}
+            />
           </div>
 
-          {/* Botones de acción */}
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              label="Activo Desde"
+              type="date"
+              value={activoDesde}
+              onChange={(e) => setActivoDesde(e.target.value)}
+            />
+
+            <Input
+              label="Activo Hasta (Vigencia)"
+              type="date"
+              value={activoHasta}
+              onChange={(e) => setActivoHasta(e.target.value)}
+            />
+          </div>
+
           <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
             <Button
               type="button"
               variant="secondary"
               size="sm"
               onClick={onClose}
+              disabled={isSaving}
             >
               Cancelar
             </Button>
@@ -232,6 +238,7 @@ export const ModalPlanAcademico: React.FC<ModalPlanAcademicoProps> = ({
               type="submit"
               variant="primary"
               size="sm"
+              isLoading={isSaving}
             >
               Crear Plan Académico
             </Button>

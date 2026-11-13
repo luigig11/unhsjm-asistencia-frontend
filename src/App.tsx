@@ -37,6 +37,8 @@ function AppContent() {
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>('login');
   const [selectedSessionId, setSelectedSessionId] = useState<string>('');
   const [selectedCourseId, setSelectedCourseId] = useState<string>('');
+  const [selectedPlanId, setSelectedPlanId] = useState<string>('');
+  const [selectedPlanCode, setSelectedPlanCode] = useState<string>('');
 
   const handleNavigate = async (key: string) => {
     if (key === 'login') {
@@ -65,11 +67,17 @@ function AppContent() {
       {activeScreen === 'catalogs' && <Catalogs />}
       {activeScreen === 'academic-plans' && (
         <AcademicPlans
-          onNavigateToMalla={() => setActiveScreen('curriculum-design')}
+          onNavigateToMalla={(planId, planCodigo) => {
+            setSelectedPlanId(planId);
+            setSelectedPlanCode(planCodigo);
+            setActiveScreen('curriculum-design');
+          }}
         />
       )}
       {activeScreen === 'curriculum-design' && (
         <CurriculumDesign
+          planId={selectedPlanId}
+          planCodigo={selectedPlanCode}
           onBackToPlans={() => setActiveScreen('academic-plans')}
         />
       )}

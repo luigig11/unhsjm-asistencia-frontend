@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CloseIcon } from '../common/Icons';
-import { Button } from '../common/Button';
+import { Button, Input } from '../common';
 
 interface ModalCrearGrupoProps {
   isOpen: boolean;
@@ -64,48 +64,31 @@ export const ModalCrearGrupo: React.FC<ModalCrearGrupoProps> = ({
         )}
 
         <form onSubmit={handleSubmit} className="p-5 space-y-3.5 text-xs">
-          <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">
-              Código de Sección <span className="text-[#C81E2B]">*</span>
-            </label>
-            <input
-              type="text"
-              value={codigo}
-              onChange={(e) => setCodigo(e.target.value)}
-              placeholder="Ej. ISI-01"
-              className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-              required
-            />
-          </div>
+          <Input
+            label="Código de Sección"
+            required
+            value={codigo}
+            onChange={(e) => setCodigo(e.target.value)}
+            placeholder="Ej. ISI-01"
+          />
 
-          <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">
-              Nombre descriptivo <span className="text-[#C81E2B]">*</span>
-            </label>
-            <input
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              placeholder="Ej. Ingeniería en Sistemas - Turno Mañana"
-              className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-              required
-            />
-          </div>
+          <Input
+            label="Nombre descriptivo"
+            required
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            placeholder="Ej. Ingeniería en Sistemas - Turno Mañana"
+          />
 
-          <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">
-              Cupo Límite de Estudiantes <span className="text-[#C81E2B]">*</span>
-            </label>
-            <input
-              type="number"
-              min={1}
-              max={100}
-              value={cupo}
-              onChange={(e) => setCupo(e.target.value)}
-              className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-              required
-            />
-          </div>
+          <Input
+            label="Cupo Límite de Estudiantes"
+            type="number"
+            min={1}
+            max={100}
+            required
+            value={cupo}
+            onChange={(e) => setCupo(e.target.value)}
+          />
 
           <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
             <Button

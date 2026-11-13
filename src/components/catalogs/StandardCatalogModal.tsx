@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '../common/Button';
+import { Button, Input } from '../common';
 
 export interface CatalogItem {
   id: string;
@@ -85,41 +85,25 @@ export const StandardCatalogModal: React.FC<StandardCatalogModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label
-              htmlFor="catalog-codigo"
-              className="block text-xs font-semibold uppercase tracking-wider text-[#475569] mb-1.5"
-            >
-              Código Único *
-            </label>
-            <input
-              id="catalog-codigo"
-              type="text"
-              required
-              value={codigo}
-              onChange={(e) => setCodigo(e.target.value)}
-              placeholder="ej. ING-SIS o LAB-01"
-              className="w-full px-3.5 py-2 text-xs font-mono bg-[#FFFFFF] border border-slate-200 rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-            />
-          </div>
+          <Input
+            id="catalog-codigo"
+            label="Código Único"
+            required
+            value={codigo}
+            onChange={(e) => setCodigo(e.target.value)}
+            placeholder="ej. ING-SIS o LAB-01"
+            className="font-mono bg-white"
+          />
 
-          <div>
-            <label
-              htmlFor="catalog-nombre"
-              className="block text-xs font-semibold uppercase tracking-wider text-[#475569] mb-1.5"
-            >
-              Nombre Oficial *
-            </label>
-            <input
-              id="catalog-nombre"
-              type="text"
-              required
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              placeholder="Descripción oficial del elemento"
-              className="w-full px-3.5 py-2 text-xs bg-[#FFFFFF] border border-slate-200 rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-            />
-          </div>
+          <Input
+            id="catalog-nombre"
+            label="Nombre Oficial"
+            required
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            placeholder="Descripción oficial del elemento"
+            className="bg-white"
+          />
 
           <div className="flex items-center justify-between pt-2">
             <span className="text-xs font-medium text-[#475569]">

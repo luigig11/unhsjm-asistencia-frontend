@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CloseIcon } from '../common/Icons';
-import { Button } from '../common/Button';
+import { Button, Input, Select } from '../common';
 
 export interface SubjectOption {
   idMallaCurricular: string;
@@ -133,103 +133,70 @@ export const ModalAsignarMateria: React.FC<ModalAsignarMateriaProps> = ({
 
         <form onSubmit={handleSubmit} className="p-5 space-y-3.5 text-xs">
           {availableSubjects.length > 0 ? (
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Asignatura de la Malla <span className="text-[#C81E2B]">*</span>
-              </label>
-              <select
-                value={selectedSubjectId}
-                onChange={(e) => setSelectedSubjectId(e.target.value)}
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-                required
-              >
-                <option value="">-- Seleccionar asignatura --</option>
-                {availableSubjects.map((sub) => (
-                  <option key={sub.idMallaCurricular} value={sub.idMallaCurricular}>
-                    {sub.codigo} — {sub.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Select
+              label="Asignatura de la Malla"
+              required
+              value={selectedSubjectId}
+              onChange={(e) => setSelectedSubjectId(e.target.value)}
+            >
+              <option value="">-- Seleccionar asignatura --</option>
+              {availableSubjects.map((sub) => (
+                <option key={sub.idMallaCurricular} value={sub.idMallaCurricular}>
+                  {sub.codigo} — {sub.nombre}
+                </option>
+              ))}
+            </Select>
           ) : (
             <>
-              <div className="space-y-1">
-                <label className="font-semibold text-[#475569] block">
-                  Código de la Asignatura <span className="text-[#C81E2B]">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={manualCodigo}
-                  onChange={(e) => setManualCodigo(e.target.value)}
-                  placeholder="Ej. PROG-101"
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-                  required
-                />
-              </div>
+              <Input
+                label="Código de la Asignatura"
+                required
+                value={manualCodigo}
+                onChange={(e) => setManualCodigo(e.target.value)}
+                placeholder="Ej. PROG-101"
+              />
 
-              <div className="space-y-1">
-                <label className="font-semibold text-[#475569] block">
-                  Nombre de la Asignatura <span className="text-[#C81E2B]">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={manualMateria}
-                  onChange={(e) => setManualMateria(e.target.value)}
-                  placeholder="Ej. Fundamentos de Programación"
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-                  required
-                />
-              </div>
+              <Input
+                label="Nombre de la Asignatura"
+                required
+                value={manualMateria}
+                onChange={(e) => setManualMateria(e.target.value)}
+                placeholder="Ej. Fundamentos de Programación"
+              />
             </>
           )}
 
           {availableTeachers.length > 0 ? (
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Docente Titular Asignado <span className="text-[#C81E2B]">*</span>
-              </label>
-              <select
-                value={selectedTeacherId}
-                onChange={(e) => setSelectedTeacherId(e.target.value)}
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-                required
-              >
-                <option value="">-- Seleccionar docente --</option>
-                {availableTeachers.map((doc) => (
-                  <option key={doc.id} value={doc.id}>
-                    {doc.nombre} ({doc.codigo})
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Select
+              label="Docente Titular Asignado"
+              required
+              value={selectedTeacherId}
+              onChange={(e) => setSelectedTeacherId(e.target.value)}
+            >
+              <option value="">-- Seleccionar docente --</option>
+              {availableTeachers.map((doc) => (
+                <option key={doc.id} value={doc.id}>
+                  {doc.nombre} ({doc.codigo})
+                </option>
+              ))}
+            </Select>
           ) : (
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Docente Titular Asignado
-              </label>
-              <input
-                type="text"
-                value={manualDocente}
-                onChange={(e) => setManualDocente(e.target.value)}
-                placeholder="Nombre del docente (opcional)"
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-              />
-            </div>
+            <Input
+              label="Docente Titular Asignado"
+              value={manualDocente}
+              onChange={(e) => setManualDocente(e.target.value)}
+              placeholder="Nombre del docente (opcional)"
+            />
           )}
 
-          <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">
-              Cupo de la Asignatura
-            </label>
-            <input
-              type="number"
-              min={1}
-              max={150}
-              value={cupo}
-              onChange={(e) => setCupo(e.target.value)}
-              className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] focus:outline-none focus:border-[#1D63B8]"
-            />
-          </div>
+          <Input
+            label="Cupo de la Asignatura"
+            type="number"
+            min={1}
+            max={150}
+            value={cupo}
+            onChange={(e) => setCupo(e.target.value)}
+          />
 
           <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
             <Button

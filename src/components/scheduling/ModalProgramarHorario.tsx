@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { CloseIcon, ChevronDownIcon } from '../common/Icons';
-import { Button } from '../common/Button';
+import { CloseIcon } from '../common/Icons';
+import { Button, Select } from '../common';
 import type { Schedule } from './ScheduleWeeklyGrid';
 import type { MateriaPorGrupoDto } from '../../api/calendario';
 import type { AulaDto } from '../../api/catalogos';
@@ -185,126 +185,79 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
             </div>
           )}
 
-          <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">
-              Grupo y Asignatura Ofertada <span className="text-[#C81E2B]">*</span>
-            </label>
-            <div className="relative">
-              <select
-                value={selectedMpgId}
-                onChange={(e) => setSelectedMpgId(e.target.value)}
-                className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
-                required
-              >
-                {materiasPorGrupo.length === 0 ? (
-                  <option value="">Sin asignaturas ofertadas en los grupos</option>
-                ) : (
-                  materiasPorGrupo.map((mpg) => (
-                    <option key={mpg.id} value={mpg.id}>
-                      [{mpg.grupoCodigo}] {mpg.materiaCodigo} — {mpg.materiaNombre} ({mpg.docenteNombreCompleto})
-                    </option>
-                  ))
-                )}
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
-                <ChevronDownIcon className="w-3.5 h-3.5" />
-              </div>
-            </div>
-          </div>
+          <Select
+            label="Grupo y Asignatura Ofertada"
+            required
+            value={selectedMpgId}
+            onChange={(e) => setSelectedMpgId(e.target.value)}
+          >
+            {materiasPorGrupo.length === 0 ? (
+              <option value="">Sin asignaturas ofertadas en los grupos</option>
+            ) : (
+              materiasPorGrupo.map((mpg) => (
+                <option key={mpg.id} value={mpg.id}>
+                  [{mpg.grupoCodigo}] {mpg.materiaCodigo} — {mpg.materiaNombre} ({mpg.docenteNombreCompleto})
+                </option>
+              ))
+            )}
+          </Select>
 
-          <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">
-              Aula Física Asignada <span className="text-[#C81E2B]">*</span>
-            </label>
-            <div className="relative">
-              <select
-                value={selectedAulaId}
-                onChange={(e) => setSelectedAulaId(e.target.value)}
-                className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
-                required
-              >
-                {aulas.length === 0 ? (
-                  <option value="">Sin aulas registradas</option>
-                ) : (
-                  aulas.map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.codigo} — {a.nombre} (Cap: {a.capacidad} estudiantes)
-                    </option>
-                  ))
-                )}
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
-                <ChevronDownIcon className="w-3.5 h-3.5" />
-              </div>
-            </div>
-          </div>
+          <Select
+            label="Aula Física Asignada"
+            required
+            value={selectedAulaId}
+            onChange={(e) => setSelectedAulaId(e.target.value)}
+          >
+            {aulas.length === 0 ? (
+              <option value="">Sin aulas registradas</option>
+            ) : (
+              aulas.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.codigo} — {a.nombre} (Cap: {a.capacidad} estudiantes)
+                </option>
+              ))
+            )}
+          </Select>
 
           <div className="grid grid-cols-3 gap-3">
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Día de la Semana <span className="text-[#C81E2B]">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={selectedDiaId}
-                  onChange={(e) => setSelectedDiaId(Number(e.target.value))}
-                  className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
-                >
-                  {DIAS_SEMANA.map((d) => (
-                    <option key={d.idDia} value={d.idDia}>
-                      {d.nombre}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
-                  <ChevronDownIcon className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </div>
+            <Select
+              label="Día de la Semana"
+              required
+              value={selectedDiaId}
+              onChange={(e) => setSelectedDiaId(Number(e.target.value))}
+            >
+              {DIAS_SEMANA.map((d) => (
+                <option key={d.idDia} value={d.idDia}>
+                  {d.nombre}
+                </option>
+              ))}
+            </Select>
 
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Hora Inicio <span className="text-[#C81E2B]">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={horaInicio}
-                  onChange={(e) => setHoraInicio(e.target.value)}
-                  className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
-                >
-                  {HORAS_CATALOGO.map((h) => (
-                    <option key={h} value={h}>
-                      {h}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
-                  <ChevronDownIcon className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </div>
+            <Select
+              label="Hora Inicio"
+              required
+              value={horaInicio}
+              onChange={(e) => setHoraInicio(e.target.value)}
+            >
+              {HORAS_CATALOGO.map((h) => (
+                <option key={h} value={h}>
+                  {h}
+                </option>
+              ))}
+            </Select>
 
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Hora Fin <span className="text-[#C81E2B]">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={horaFin}
-                  onChange={(e) => setHoraFin(e.target.value)}
-                  className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
-                >
-                  {HORAS_CATALOGO.map((h) => (
-                    <option key={h} value={h}>
-                      {h}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
-                  <ChevronDownIcon className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </div>
+            <Select
+              label="Hora Fin"
+              required
+              value={horaFin}
+              onChange={(e) => setHoraFin(e.target.value)}
+            >
+              {HORAS_CATALOGO.map((h) => (
+                <option key={h} value={h}>
+                  {h}
+                </option>
+              ))}
+            </Select>
           </div>
 
           <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">

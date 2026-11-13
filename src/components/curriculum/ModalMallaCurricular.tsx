@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { CloseIcon, ChevronDownIcon } from '../common/Icons';
-import { Button } from '../common/Button';
+import { CloseIcon } from '../common/Icons';
+import { Button, Input, Select } from '../common';
 import type { SubjectMalla } from './SubjectCard';
 
-// Catálogo oficial de asignaturas de Ingeniería en Sistemas de Información (UNHSJM)
 const MATERIAS_CATALOGO = [
   { id: 'mat-ing-tec', codigo: 'ING-101', nombre: 'Inglés Técnico' },
   { id: 'mat-fts', codigo: 'FTS-101', nombre: 'Fundamentos de Tecnología y Sistemas' },
@@ -92,9 +91,7 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
-      {/* Contenedor del Modal A (Flat Design 2.0, max-w-lg) */}
       <div className="bg-white border border-[#E2E8F0] rounded-lg max-w-lg w-full text-left shadow-none overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Encabezado */}
         <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-white">
           <div>
             <h3 className="text-sm font-bold text-[#0F172A]">
@@ -114,98 +111,63 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
           />
         </div>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit} className="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
-          {/* Selector de Materia */}
-          <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">
-              Asignatura del Catálogo <span className="text-[#C81E2B]">*</span>
-            </label>
-            <div className="relative">
-              <select
-                value={selectedMateriaId}
-                onChange={(e) => setSelectedMateriaId(e.target.value)}
-                className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#1D63B8] focus:border-[#1D63B8] cursor-pointer"
-                required
-              >
-                {MATERIAS_CATALOGO.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.codigo} — {m.nombre}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-[#475569]">
-                <ChevronDownIcon className="w-3.5 h-3.5" />
-              </div>
-            </div>
-          </div>
+          <Select
+            label="Asignatura del Catálogo"
+            required
+            value={selectedMateriaId}
+            onChange={(e) => setSelectedMateriaId(e.target.value)}
+          >
+            {MATERIAS_CATALOGO.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.codigo} — {m.nombre}
+              </option>
+            ))}
+          </Select>
 
-          {/* Fila de Campos Numéricos: Créditos y Horas Totales */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Créditos Académicos (CR)
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={12}
-                value={creditos}
-                onChange={(e) => setCreditos(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#1D63B8] focus:border-[#1D63B8]"
-                required
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Horas de Materia (h)
-              </label>
-              <input
-                type="number"
-                min={10}
-                max={300}
-                step={5}
-                value={horas}
-                onChange={(e) => setHoras(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#1D63B8] focus:border-[#1D63B8]"
-                required
-              />
-            </div>
+            <Input
+              label="Créditos Académicos (CR)"
+              type="number"
+              min={1}
+              max={12}
+              required
+              value={creditos}
+              onChange={(e) => setCreditos(Number(e.target.value))}
+            />
+            <Input
+              label="Horas de Materia (h)"
+              type="number"
+              min={10}
+              max={300}
+              step={5}
+              required
+              value={horas}
+              onChange={(e) => setHoras(Number(e.target.value))}
+            />
           </div>
 
-          {/* Fila: Encuentros Totales y Encuentros por Semana */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Encuentros Totales (sesiones)
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={60}
-                value={encuentrosTotales}
-                onChange={(e) => setEncuentrosTotales(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#1D63B8] focus:border-[#1D63B8]"
-                required
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">
-                Encuentros por Semana
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={5}
-                value={encuentrosSemana}
-                onChange={(e) => setEncuentrosSemana(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#1D63B8] focus:border-[#1D63B8]"
-                required
-              />
-            </div>
+            <Input
+              label="Encuentros Totales (sesiones)"
+              type="number"
+              min={1}
+              max={60}
+              required
+              value={encuentrosTotales}
+              onChange={(e) => setEncuentrosTotales(Number(e.target.value))}
+            />
+            <Input
+              label="Encuentros por Semana"
+              type="number"
+              min={1}
+              max={5}
+              required
+              value={encuentrosSemana}
+              onChange={(e) => setEncuentrosSemana(Number(e.target.value))}
+            />
           </div>
 
-          {/* Switch Obligatoria / Optativa */}
           <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between">
             <div>
               <span className="font-semibold text-[#0F172A] block">
@@ -230,7 +192,6 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
             </button>
           </div>
 
-          {/* Selector Múltiple de Prerrequisitos */}
           <div className="pt-2 border-t border-[#E2E8F0] space-y-1.5">
             <label className="font-semibold text-[#475569] block">
               Prerrequisitos de la Asignatura
@@ -257,7 +218,6 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
             </div>
           </div>
 
-          {/* Botones de Acción */}
           <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
             <Button
               type="button"

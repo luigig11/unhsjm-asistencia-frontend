@@ -6,10 +6,14 @@ import type { CicloAcademicoGroup } from '../components/curriculum/CurriculumKan
 import type { SubjectMalla } from '../components/curriculum/SubjectCard';
 
 interface CurriculumDesignProps {
+  planId?: string;
+  planCodigo?: string;
   onBackToPlans?: () => void;
 }
 
 export const CurriculumDesign: React.FC<CurriculumDesignProps> = ({
+  planId: _planId,
+  planCodigo,
   onBackToPlans,
 }) => {
   const [ciclos, setCiclos] = useState<CicloAcademicoGroup[]>([]);
@@ -69,7 +73,7 @@ export const CurriculumDesign: React.FC<CurriculumDesignProps> = ({
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
       <CurriculumHeader
-        planCodigo="ISI-2026"
+        planCodigo={planCodigo || 'ISI-2026'}
         carreraNombre="Ingeniería en Sistemas de Información"
         modalidad="Regular / Diurna"
         totalCiclos={totalCiclos}
