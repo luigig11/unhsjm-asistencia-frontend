@@ -6,6 +6,7 @@ import type { CatalogItem } from './StandardCatalogModal';
 interface CatalogContentViewProps {
   currentTab: CatalogTabConfig;
   items?: CatalogItem[];
+  loading?: boolean;
   searchTerm: string;
   onSearchChange: (value: string) => void;
   onOpenCreateModal: () => void;
@@ -15,15 +16,15 @@ interface CatalogContentViewProps {
 export const CatalogContentView: React.FC<CatalogContentViewProps> = ({
   currentTab,
   items = [],
+  loading = false,
   searchTerm,
   onSearchChange,
   onOpenCreateModal,
   onEditItem,
 }) => {
   return (
-    <div className="flex-1 bg-[#FFFFFF] border border-slate-200 rounded-lg overflow-hidden text-left flex flex-col justify-between">
+    <div className="flex-1 bg-[#FFFFFF] border border-slate-200 rounded-lg overflow-hidden text-left flex flex-col justify-between shadow-sm">
       <div>
-        {/* Barra superior de herramientas: Título, Buscador y Botón Nuevo */}
         <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#FFFFFF]">
           <div>
             <h2 className="text-base font-bold text-[#0F3C6E]">
@@ -35,7 +36,6 @@ export const CatalogContentView: React.FC<CatalogContentViewProps> = ({
           </div>
 
           <div className="flex items-center gap-2.5">
-            {/* Buscador */}
             <div className="relative w-full sm:w-60">
               <span className="inset-y-0 left-0 pl-3 flex items-center pointer-events-none absolute text-[#94A3B8]">
                 <SearchIcon className="w-4 h-4" />
@@ -49,11 +49,10 @@ export const CatalogContentView: React.FC<CatalogContentViewProps> = ({
               />
             </div>
 
-            {/* Botón "+ Nuevo Registro" */}
             <button
               type="button"
               onClick={onOpenCreateModal}
-              className="px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-[#0F3C6E] hover:bg-[#0A294D] border border-[#0F3C6E] flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+              className="px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-[#0F3C6E] hover:bg-[#0A294D] border border-[#0F3C6E] flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-xs"
             >
               <PlusIcon className="w-3.5 h-3.5" />
               <span>Nuevo Registro</span>
@@ -61,7 +60,6 @@ export const CatalogContentView: React.FC<CatalogContentViewProps> = ({
           </div>
         </div>
 
-        {/* Tabla Limpia de Catálogo */}
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -79,8 +77,19 @@ export const CatalogContentView: React.FC<CatalogContentViewProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 text-sm">
-              {items.length === 0 ? (
-                /* Estado Vacío Limpio (Plantilla) */
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan={3 + (currentTab.extraHeader1 ? 1 : 0) + (currentTab.extraHeader2 ? 1 : 0) + 1}
+                    className="py-16 px-6 text-center text-xs text-[#475569]"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="w-4 h-4 border-2 border-[#1D63B8] border-t-transparent rounded-full animate-spin" />
+                      <span>Cargando catálogo...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : items.length === 0 ? (
                 <tr>
                   <td
                     colSpan={3 + (currentTab.extraHeader1 ? 1 : 0) + (currentTab.extraHeader2 ? 1 : 0) + 1}
@@ -145,7 +154,6 @@ export const CatalogContentView: React.FC<CatalogContentViewProps> = ({
         </div>
       </div>
 
-      {/* Pie de tabla con total */}
       <div className="p-3 bg-[#F8FAFC] border-t border-slate-200 flex items-center justify-between text-xs text-[#475569]">
         <span>Total: {items.length} elementos</span>
         <span className="font-mono text-[11px] text-[#94A3B8]">UNHSJM · Catálogos</span>

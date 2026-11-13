@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface CatalogItem {
   id: string;
@@ -7,6 +7,7 @@ export interface CatalogItem {
   activo: boolean;
   extraCol1?: string;
   extraCol2?: string;
+  raw?: unknown;
 }
 
 interface StandardCatalogModalProps {
@@ -14,7 +15,8 @@ interface StandardCatalogModalProps {
   onClose: () => void;
   catalogTitle: string;
   itemToEdit?: CatalogItem | null;
-  onSave?: (item: Partial<CatalogItem>) => void;
+  onSave?: (item: Partial<CatalogItem>) => Promise<void>;
+  loading?: boolean;
 }
 
 export const StandardCatalogModal: React.FC<StandardCatalogModalProps> = ({
@@ -23,27 +25,43 @@ export const StandardCatalogModal: React.FC<StandardCatalogModalProps> = ({
   catalogTitle,
   itemToEdit,
   onSave,
+  loading = false,
 }) => {
-  const [codigo, setCodigo] = useState<string>(itemToEdit?.codigo || '');
-  const [nombre, setNombre] = useState<string>(itemToEdit?.nombre || '');
-  const [activo, setActivo] = useState<boolean>(itemToEdit?.activo ?? true);
+  const [codigo, setCodigo] = useState<string>('');
+  const [nombre, setNombre] = useState<string>('');
+  const [activo, setActivo] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (itemToEdit) {
+        setCodigo(itemToEdit.codigo || '');
+        setNombre(itemToEdit.nombre || '');
+        setActivo(itemToEdit.activo ?? true);
+      } else {
+        setCodigo('');
+        setNombre('');
+        setActivo(true);
+      }
+    }
+  }, [isOpen, itemToEdit]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSave?.({
-      codigo,
-      nombre,
-      activo,
-    });
-    onClose();
+    if (onSave) {
+      await onSave({
+        id: itemToEdit?.id,
+        codigo,
+        nombre,
+        activo,
+      });
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
-      <div className="w-full max-w-md bg-[#FFFFFF] border border-slate-200 rounded-lg shadow-sm overflow-hidden text-left">
-        {/* Cabecera del modal */}
+      <div className="w-full max-w-md bg-[#FFFFFF] border border-slate-200 rounded-lg shadow-lg overflow-hidden text-left">
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-[#F8FAFC]">
           <div>
             <span className="text-xs font-semibold uppercase tracking-wider text-[#1D63B8]">
@@ -63,15 +81,13 @@ export const StandardCatalogModal: React.FC<StandardCatalogModalProps> = ({
           </button>
         </div>
 
-        {/* Formulario */}
-        <form onSubmit={handleSubmit} noValidate className="p-6 space-y-4">
-          {/* Código */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
             <label
               htmlFor="catalog-codigo"
               className="block text-xs font-semibold uppercase tracking-wider text-[#475569] mb-1.5"
             >
-              Código Único
+              Código Único *
             </label>
             <input
               id="catalog-codigo"
@@ -84,13 +100,12 @@ export const StandardCatalogModal: React.FC<StandardCatalogModalProps> = ({
             />
           </div>
 
-          {/* Nombre descriptivo */}
           <div>
             <label
               htmlFor="catalog-nombre"
               className="block text-xs font-semibold uppercase tracking-wider text-[#475569] mb-1.5"
             >
-              Nombre Oficial
+              Nombre Oficial *
             </label>
             <input
               id="catalog-nombre"
@@ -103,7 +118,6 @@ export const StandardCatalogModal: React.FC<StandardCatalogModalProps> = ({
             />
           </div>
 
-          {/* Estado Activo */}
           <div className="flex items-center justify-between pt-2">
             <span className="text-xs font-medium text-[#475569]">
               Registro Activo
@@ -119,20 +133,21 @@ export const StandardCatalogModal: React.FC<StandardCatalogModalProps> = ({
             </label>
           </div>
 
-          {/* Botones de acción */}
           <div className="pt-4 flex items-center justify-end gap-2.5 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
+              disabled={loading}
               className="px-4 py-2 rounded-md text-xs font-semibold text-[#0F172A] bg-[#FFFFFF] border border-slate-200 hover:bg-[#F8FAFC] transition-colors cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-md text-xs font-semibold text-white bg-[#0F3C6E] hover:bg-[#0A294D] border border-[#0F3C6E] transition-colors cursor-pointer"
+              disabled={loading}
+              className="px-4 py-2 rounded-md text-xs font-semibold text-white bg-[#0F3C6E] hover:bg-[#0A294D] border border-[#0F3C6E] transition-colors cursor-pointer disabled:opacity-50"
             >
-              Guardar Registro
+              {loading ? 'Guardando...' : 'Guardar Registro'}
             </button>
           </div>
         </form>
