@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CloseIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface OpcionDocenteSustituto {
   id: string;
@@ -79,13 +80,14 @@ export const ModalIncidenciaDocente: React.FC<ModalIncidenciaDocenteProps> = ({
               Notificación de ausencia del docente titular y asignación de reemplazo
             </p>
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
+            icon={<CloseIcon className="w-4 h-4" />}
             onClick={onClose}
-            className="p-1 rounded-md text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F1F5F9] cursor-pointer"
-          >
-            <CloseIcon className="w-4 h-4" />
-          </button>
+            className="text-[#94A3B8] hover:text-[#0F172A]"
+          />
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs">
@@ -131,19 +133,21 @@ export const ModalIncidenciaDocente: React.FC<ModalIncidenciaDocenteProps> = ({
           </div>
 
           <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
-              className="px-4 py-2 rounded-md font-semibold text-[#64748B] hover:bg-[#F1F5F9] border border-[#CBD5E1] transition-colors cursor-pointer"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="px-4 py-2 rounded-md font-semibold text-white bg-[#0F3C6E] hover:bg-[#0A294D] transition-colors cursor-pointer"
+              variant="primary"
+              size="sm"
             >
               Confirmar Incidencia
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '../common/Button';
 
 export interface Schedule {
   id: number;
@@ -104,20 +105,22 @@ export const ScheduleWeeklyGrid: React.FC<ScheduleWeeklyGridProps> = ({
                                 </span>
 
                                 <div className="flex items-center gap-1.5">
-                                  <button
-                                    type="button"
+                                  <Button
+                                    variant="ghost"
+                                    size="xs"
                                     onClick={() => onEditSchedule(item)}
-                                    className="text-[10px] font-semibold text-[#1D63B8] hover:underline cursor-pointer"
+                                    className="text-[10px] text-[#1D63B8] p-0 hover:underline"
                                   >
                                     Editar
-                                  </button>
-                                  <button
-                                    type="button"
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="xs"
                                     onClick={() => onDeleteSchedule(item.id)}
-                                    className="text-[10px] font-semibold text-[#C81E2B] hover:underline cursor-pointer"
+                                    className="text-[10px] text-[#C81E2B] p-0 hover:underline hover:text-red-700"
                                   >
                                     Quitar
-                                  </button>
+                                  </Button>
                                 </div>
                               </div>
                             </div>

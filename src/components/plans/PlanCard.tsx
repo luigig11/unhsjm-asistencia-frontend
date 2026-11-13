@@ -1,5 +1,6 @@
 import React from 'react';
 import { KanbanIcon, CalendarIcon, CheckCircleIcon, ClockIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface PlanAcademicoItem {
   id: string;
@@ -105,24 +106,24 @@ export const PlanCard: React.FC<PlanCardProps> = ({
 
       {/* Acciones de Tarjeta: Botón Primario 'Diseñar Malla Curricular' */}
       <div className="pt-3 border-t border-[#E2E8F0] flex items-center gap-2">
-        <button
-          type="button"
+        <Button
+          variant="primary"
+          size="sm"
+          icon={<KanbanIcon className="w-3.5 h-3.5" />}
           onClick={() => onDesignMalla(plan)}
-          className="flex-1 inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-[#0F3C6E] hover:bg-[#0A294D] text-white text-xs font-semibold rounded-md border border-[#0F3C6E] transition-colors cursor-pointer"
+          className="flex-1"
         >
-          <KanbanIcon className="w-3.5 h-3.5" />
-          <span>Diseñar Malla Curricular</span>
-        </button>
+          Diseñar Malla Curricular
+        </Button>
 
         {onEdit && (
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={<ClockIcon className="w-3.5 h-3.5" />}
             onClick={() => onEdit(plan)}
             title="Editar metadatos del plan"
-            className="p-2 text-[#475569] hover:text-[#0F172A] hover:bg-[#F1F5F9] border border-[#E2E8F0] rounded-md transition-colors cursor-pointer"
-          >
-            <ClockIcon className="w-3.5 h-3.5" />
-          </button>
+          />
         )}
       </div>
     </div>

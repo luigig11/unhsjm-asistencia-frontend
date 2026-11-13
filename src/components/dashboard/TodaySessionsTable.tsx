@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SesionHoyDashboard, EstadoActaSesion } from '../../api/dashboard';
 import { SearchIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 interface TodaySessionsTableProps {
   sesiones?: SesionHoyDashboard[];
@@ -128,18 +129,15 @@ export const TodaySessionsTable: React.FC<TodaySessionsTableProps> = ({
 
       <div className="px-4 py-2.5 bg-[#F8FAFC] border-b border-slate-200 flex flex-wrap items-center gap-1.5">
         {filterTabs.map((tab) => (
-          <button
+          <Button
             key={tab.key}
             type="button"
+            variant={sessionFilter === tab.key ? 'primary' : 'secondary'}
+            size="xs"
             onClick={() => onFilterChange(tab.key)}
-            className={`px-2.5 py-1 rounded text-xs font-medium border transition-colors ${
-              sessionFilter === tab.key
-                ? 'bg-[#0F3C6E] text-white border-[#0F3C6E]'
-                : 'bg-[#FFFFFF] text-[#475569] border-slate-200 hover:text-[#0F172A]'
-            }`}
           >
             {tab.label}
-          </button>
+          </Button>
         ))}
       </div>
 

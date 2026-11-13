@@ -1,5 +1,6 @@
 import React from 'react';
 import { SearchIcon, ChevronDownIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface PlanFiltersState {
   searchQuery: string;
@@ -44,14 +45,14 @@ export const PlanFilters: React.FC<PlanFiltersProps> = ({
 
         {/* Botón Nuevo Plan Académico */}
         <div className="flex items-center gap-2">
-          <button
-            type="button"
+          <Button
+            variant="primary"
+            size="sm"
+            icon={<span className="text-sm leading-none">+</span>}
             onClick={onNewPlan}
-            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-md bg-[#0F3C6E] hover:bg-[#0A294D] text-white text-xs font-semibold border border-[#0F3C6E] transition-colors shadow-xs cursor-pointer"
           >
-            <span className="text-sm leading-none">+</span>
-            <span>Nuevo Plan Académico</span>
-          </button>
+            Nuevo Plan Académico
+          </Button>
         </div>
       </div>
 

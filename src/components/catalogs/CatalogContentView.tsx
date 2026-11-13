@@ -1,5 +1,6 @@
 import React from 'react';
 import { SearchIcon, PlusIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 import type { CatalogTabConfig } from './CatalogNav';
 import type { CatalogItem } from './StandardCatalogModal';
 
@@ -49,14 +50,15 @@ export const CatalogContentView: React.FC<CatalogContentViewProps> = ({
               />
             </div>
 
-            <button
-              type="button"
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<PlusIcon className="w-3.5 h-3.5" />}
               onClick={onOpenCreateModal}
-              className="px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-[#0F3C6E] hover:bg-[#0A294D] border border-[#0F3C6E] flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-xs"
+              className="shrink-0"
             >
-              <PlusIcon className="w-3.5 h-3.5" />
-              <span>Nuevo Registro</span>
-            </button>
+              Nuevo Registro
+            </Button>
           </div>
         </div>
 
@@ -138,13 +140,14 @@ export const CatalogContentView: React.FC<CatalogContentViewProps> = ({
                       )}
                     </td>
                     <td className="py-3 px-4 text-right">
-                      <button
-                        type="button"
+                      <Button
+                        variant="ghost"
+                        size="xs"
                         onClick={() => onEditItem?.(item)}
-                        className="px-2.5 py-1 text-xs font-medium text-[#0F3C6E] hover:text-[#1D63B8] hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                        className="text-[#0F3C6E] hover:text-[#1D63B8]"
                       >
                         Editar
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))

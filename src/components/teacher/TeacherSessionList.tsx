@@ -1,5 +1,6 @@
 import React from 'react';
 import { SearchIcon, ClockIcon, CheckCircleIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export type SessionStatus = 'Pendiente' | 'Registrada';
 
@@ -133,17 +134,14 @@ export const TeacherSessionList: React.FC<TeacherSessionListProps> = ({
                     </span>
                   </div>
 
-                  <button
-                    type="button"
+                  <Button
+                    variant={isPending ? 'primary' : 'outline'}
+                    size="sm"
                     onClick={() => onPassAttendance(session)}
-                    className={`w-full py-2 px-3 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs ${
-                      isPending
-                        ? 'bg-[#0F3C6E] hover:bg-[#0A294D] text-white'
-                        : 'bg-[#F8FAFC] hover:bg-[#EBF3FC] text-[#1D63B8] border border-[#CBD5E1]'
-                    }`}
+                    className="w-full"
                   >
-                    <span>{isPending ? 'Pasar Asistencia' : 'Ver Acta Registrada'}</span>
-                  </button>
+                    {isPending ? 'Pasar Asistencia' : 'Ver Acta Registrada'}
+                  </Button>
                 </div>
               );
             })}

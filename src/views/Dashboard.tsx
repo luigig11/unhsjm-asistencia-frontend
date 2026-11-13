@@ -7,6 +7,7 @@ import type { DashboardResumen } from '../api/dashboard';
 import { listarDirecciones } from '../api/catalogos';
 import type { DireccionDto } from '../api/catalogos';
 import { AlertCircleIcon } from '../components/common/Icons';
+import { Button } from '../components/common/Button';
 
 export const Dashboard: React.FC = () => {
   const [sessionFilter, setSessionFilter] = useState<string>('TODAS');
@@ -89,14 +90,14 @@ export const Dashboard: React.FC = () => {
             </select>
           </div>
 
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={cargarDatos}
-            disabled={loading}
-            className="px-3 py-1.5 text-xs font-medium text-[#0F3C6E] bg-[#EBF3FC] border border-[#93C5FD] rounded-md hover:bg-[#D8E9F9] transition-colors disabled:opacity-50"
+            isLoading={loading}
           >
-            {loading ? 'Actualizando...' : 'Actualizar'}
-          </button>
+            Actualizar
+          </Button>
         </div>
       </header>
 
@@ -107,13 +108,14 @@ export const Dashboard: React.FC = () => {
               <AlertCircleIcon className="w-4 h-4 text-rose-600 shrink-0" />
               <span>{error}</span>
             </div>
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="xs"
               onClick={cargarDatos}
-              className="px-2.5 py-1 text-xs font-semibold text-rose-700 bg-white border border-rose-300 rounded hover:bg-rose-100 transition-colors shrink-0"
+              className="text-rose-700 border-rose-300 hover:bg-rose-100"
             >
               Reintentar
-            </button>
+            </Button>
           </div>
         )}
 

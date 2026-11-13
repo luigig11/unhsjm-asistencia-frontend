@@ -1,5 +1,6 @@
 import React from 'react';
 import { SearchIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export type AttendanceStatus = 'Presente' | 'Ausente';
 
@@ -81,13 +82,14 @@ export const StudentAttendanceList: React.FC<StudentAttendanceListProps> = ({
             />
           </div>
 
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={onMarkAllPresent}
-            className="px-3 py-1.5 rounded-md text-xs font-semibold text-[#0F3C6E] hover:bg-[#EBF3FC] border border-[#CBD5E1] transition-colors cursor-pointer shrink-0"
+            className="shrink-0"
           >
             Marcar Todos Presentes
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -154,29 +156,23 @@ export const StudentAttendanceList: React.FC<StudentAttendanceListProps> = ({
                     </select>
                   )}
 
-                  <div className="inline-flex rounded-md border border-[#CBD5E1] p-0.5 bg-[#F1F5F9]">
-                    <button
+                  <div className="inline-flex rounded-md border border-[#CBD5E1] p-0.5 bg-[#F1F5F9] gap-0.5">
+                    <Button
                       type="button"
+                      variant={isPresent ? 'success' : 'ghost'}
+                      size="xs"
                       onClick={() => onUpdateStatus(student.id, 'Presente')}
-                      className={`px-3 py-1 rounded text-xs font-semibold transition-colors cursor-pointer ${
-                        isPresent
-                          ? 'bg-[#15803D] text-white shadow-2xs'
-                          : 'text-[#64748B] hover:text-[#0F172A]'
-                      }`}
                     >
                       Presente
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      variant={!isPresent ? 'danger' : 'ghost'}
+                      size="xs"
                       onClick={() => onUpdateStatus(student.id, 'Ausente')}
-                      className={`px-3 py-1 rounded text-xs font-semibold transition-colors cursor-pointer ${
-                        !isPresent
-                          ? 'bg-[#C81E2B] text-white shadow-2xs'
-                          : 'text-[#64748B] hover:text-[#0F172A]'
-                      }`}
                     >
                       Ausente
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

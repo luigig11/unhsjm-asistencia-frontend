@@ -15,6 +15,7 @@ import {
 } from '../api/docente';
 import { listarDirecciones } from '../api/catalogos';
 import { AlertCircleIcon } from '../components/common/Icons';
+import { Button } from '../components/common/Button';
 
 export const Users: React.FC = () => {
   const [users, setUsers] = useState<UserItem[]>([]);
@@ -227,13 +228,14 @@ export const Users: React.FC = () => {
               <AlertCircleIcon className="w-4 h-4 text-rose-600 shrink-0" />
               <span>{error}</span>
             </div>
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="xs"
               onClick={cargarUsuarios}
-              className="px-2.5 py-1 text-xs font-semibold text-rose-700 bg-white border border-rose-300 rounded hover:bg-rose-100 transition-colors shrink-0"
+              className="text-rose-700 border-rose-300 hover:bg-rose-100"
             >
               Reintentar
-            </button>
+            </Button>
           </div>
         )}
 

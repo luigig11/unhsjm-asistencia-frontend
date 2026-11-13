@@ -2,6 +2,7 @@ import React from 'react';
 import { PlanCard } from './PlanCard';
 import type { PlanAcademicoItem } from './PlanCard';
 import { DocumentTextIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 interface PlanGridProps {
   plans: PlanAcademicoItem[];
@@ -30,13 +31,14 @@ export const PlanGrid: React.FC<PlanGridProps> = ({
           No hay planes académicos que coincidan con los criterios de búsqueda o filtros seleccionados.
         </p>
         {onClearFilters && (
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="xs"
             onClick={onClearFilters}
-            className="text-xs text-[#1D63B8] hover:underline font-semibold cursor-pointer"
+            className="text-[#1D63B8] hover:underline"
           >
             Restablecer todos los filtros
-          </button>
+          </Button>
         )}
       </div>
     );

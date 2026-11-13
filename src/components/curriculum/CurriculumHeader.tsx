@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowLeftIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 interface CurriculumHeaderProps {
   planCodigo: string;
@@ -26,14 +27,13 @@ export const CurriculumHeader: React.FC<CurriculumHeaderProps> = ({
     <div className="bg-white border-b border-[#E2E8F0] px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-10 shadow-2xs">
       <div className="flex items-center gap-3">
         {onBackToPlans && (
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={<ArrowLeftIcon className="w-4 h-4" />}
             onClick={onBackToPlans}
-            className="p-1.5 rounded-md text-[#475569] hover:text-[#0F172A] hover:bg-[#F1F5F9] border border-[#E2E8F0] transition-colors cursor-pointer"
             title="Volver al listado de planes"
-          >
-            <ArrowLeftIcon className="w-4 h-4" />
-          </button>
+          />
         )}
 
         <div>

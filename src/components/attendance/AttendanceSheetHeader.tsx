@@ -1,5 +1,6 @@
 import React from 'react';
 import { DownloadIcon, PrinterIcon, SearchIcon, ChevronDownIcon, ArrowLeftIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface OpcionCursoSabana {
   id: string;
@@ -46,14 +47,14 @@ export const AttendanceSheetHeader: React.FC<AttendanceSheetHeaderProps> = ({
         <div>
           <div className="flex items-center gap-2 mb-1">
             {onBack && (
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="xs"
+                icon={<ArrowLeftIcon className="w-3.5 h-3.5" />}
                 onClick={onBack}
-                className="px-2.5 py-1 text-xs font-semibold text-[#475569] bg-white border border-[#CBD5E1] rounded hover:bg-slate-50 transition-colors flex items-center gap-1 cursor-pointer"
               >
-                <ArrowLeftIcon className="w-3.5 h-3.5" />
-                <span>Volver</span>
-              </button>
+                Volver
+              </Button>
             )}
             <p className="text-xs font-semibold uppercase tracking-wider text-[#1D63B8]">
               Gestión Académica / Control de Asistencia
@@ -68,23 +69,24 @@ export const AttendanceSheetHeader: React.FC<AttendanceSheetHeaderProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 print:hidden">
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={<DownloadIcon className="w-4 h-4 text-[#15803D]" />}
             onClick={onExportExcel}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-md bg-white border border-[#E2E8F0] text-xs font-semibold text-[#15803D] hover:bg-[#F0FDF4] transition-colors cursor-pointer"
+            className="text-[#15803D] hover:bg-[#F0FDF4]"
           >
-            <DownloadIcon className="w-4 h-4 text-[#15803D]" />
             Exportar Excel (.csv)
-          </button>
+          </Button>
 
-          <button
-            type="button"
+          <Button
+            variant="primary"
+            size="sm"
+            icon={<PrinterIcon className="w-4 h-4" />}
             onClick={onExportPDF}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-md bg-[#0F3C6E] text-xs font-semibold text-white hover:bg-[#1D63B8] transition-colors cursor-pointer"
           >
-            <PrinterIcon className="w-4 h-4" />
             Exportar Acta PDF
-          </button>
+          </Button>
         </div>
       </div>
 

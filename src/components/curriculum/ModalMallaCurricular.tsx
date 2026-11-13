@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CloseIcon, ChevronDownIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 import type { SubjectMalla } from './SubjectCard';
 
 // Catálogo oficial de asignaturas de Ingeniería en Sistemas de Información (UNHSJM)
@@ -103,13 +104,14 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
               Asignando a: <span className="font-semibold text-[#0F3C6E]">{bloqueNombre}</span>
             </p>
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
+            icon={<CloseIcon className="w-4 h-4" />}
             onClick={onClose}
-            className="p-1 rounded-md text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors cursor-pointer"
-          >
-            <CloseIcon className="w-4 h-4" />
-          </button>
+            className="text-[#94A3B8] hover:text-[#0F172A]"
+          />
         </div>
 
         {/* Formulario */}
@@ -240,19 +242,16 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
               {MATERIAS_CATALOGO.map((m) => {
                 const isSelected = selectedPrerequisitos.includes(m.codigo);
                 return (
-                  <button
+                  <Button
                     key={m.id}
                     type="button"
+                    variant={isSelected ? 'primary' : 'secondary'}
+                    size="xs"
                     onClick={() => togglePrerequisito(m.codigo)}
-                    className={`font-mono text-[10px] px-2 py-1 rounded border transition-colors cursor-pointer ${
-                      isSelected
-                        ? 'bg-[#0F3C6E] text-white border-[#0F3C6E]'
-                        : 'bg-white text-[#475569] border-[#E2E8F0] hover:border-[#1D63B8]'
-                    }`}
+                    className="font-mono text-[10px]"
                   >
-                    {isSelected && '✓ '}
-                    {m.codigo}
-                  </button>
+                    {isSelected ? `✓ ${m.codigo}` : m.codigo}
+                  </Button>
                 );
               })}
             </div>
@@ -260,19 +259,21 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
 
           {/* Botones de Acción */}
           <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
-              className="px-4 py-2 border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-md text-[#475569] font-medium transition-colors cursor-pointer"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="px-4 py-2 bg-[#0F3C6E] hover:bg-[#0A294D] text-white rounded-md font-semibold transition-colors cursor-pointer shadow-xs"
+              variant="primary"
+              size="sm"
             >
               {initialData ? 'Guardar Cambios' : 'Agregar Asignatura'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

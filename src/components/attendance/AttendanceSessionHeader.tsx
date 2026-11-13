@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertTriangleIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 interface AttendanceSessionHeaderProps {
   sessionId?: string;
@@ -64,29 +65,21 @@ export const AttendanceSessionHeader: React.FC<AttendanceSessionHeaderProps> = (
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
+            <Button
+              variant={teacherAttended ? 'success' : 'secondary'}
+              size="sm"
               onClick={() => onSetTeacherAttended(true)}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors cursor-pointer border ${
-                teacherAttended
-                  ? 'bg-[#15803D] text-white border-[#15803D]'
-                  : 'bg-white text-[#64748B] border-[#CBD5E1] hover:bg-[#F8FAFC]'
-              }`}
             >
               Docente Titular Asistió
-            </button>
+            </Button>
 
-            <button
-              type="button"
+            <Button
+              variant={!teacherAttended ? 'danger' : 'secondary'}
+              size="sm"
               onClick={onOpenSubstituteModal}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors cursor-pointer border ${
-                !teacherAttended
-                  ? 'bg-[#D97706] text-white border-[#D97706]'
-                  : 'bg-white text-[#64748B] border-[#CBD5E1] hover:bg-[#F8FAFC]'
-              }`}
             >
               ¿Ausente / Sustituto?
-            </button>
+            </Button>
           </div>
         </div>
 

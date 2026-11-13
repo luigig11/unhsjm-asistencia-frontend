@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CloseIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 interface ModalCrearGrupoProps {
   isOpen: boolean;
@@ -45,14 +46,15 @@ export const ModalCrearGrupo: React.FC<ModalCrearGrupoProps> = ({
       <div className="bg-white border border-[#E2E8F0] rounded-lg max-w-sm w-full text-left shadow-none overflow-hidden">
         <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between">
           <h3 className="text-sm font-bold text-[#0F172A]">Abrir Grupo / Sección</h3>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
+            icon={<CloseIcon className="w-4 h-4" />}
             onClick={onClose}
             disabled={isSaving}
-            className="p-1 rounded-md text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F1F5F9] cursor-pointer"
-          >
-            <CloseIcon className="w-4 h-4" />
-          </button>
+            className="text-[#94A3B8] hover:text-[#0F172A]"
+          />
         </div>
 
         {error && (
@@ -106,21 +108,23 @@ export const ModalCrearGrupo: React.FC<ModalCrearGrupoProps> = ({
           </div>
 
           <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
               disabled={isSaving}
-              className="px-3.5 py-1.5 border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-md text-[#475569] font-medium transition-colors cursor-pointer"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              disabled={isSaving}
-              className="px-3.5 py-1.5 bg-[#0F3C6E] hover:bg-[#0A294D] text-white rounded-md font-semibold transition-colors cursor-pointer shadow-xs disabled:opacity-50"
+              variant="primary"
+              size="sm"
+              isLoading={isSaving}
             >
-              {isSaving ? 'Guardando...' : 'Guardar Grupo'}
-            </button>
+              Guardar Grupo
+            </Button>
           </div>
         </form>
       </div>

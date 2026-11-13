@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CloseIcon, ChevronDownIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface EventType {
   id: string;
@@ -85,13 +86,14 @@ export const ModalEventoFeriado: React.FC<ModalEventoFeriadoProps> = ({
               Impacta directamente en la no programación de sesiones de clase
             </p>
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
+            icon={<CloseIcon className="w-4 h-4" />}
             onClick={onClose}
-            className="p-1 rounded-md text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors cursor-pointer"
-          >
-            <CloseIcon className="w-4 h-4" />
-          </button>
+            className="text-[#94A3B8] hover:text-[#0F172A]"
+          />
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs">
@@ -170,21 +172,23 @@ export const ModalEventoFeriado: React.FC<ModalEventoFeriadoProps> = ({
           </div>
 
           <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-md text-[#475569] font-medium transition-colors cursor-pointer"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-[#0F3C6E] hover:bg-[#0A294D] text-white rounded-md font-semibold transition-colors cursor-pointer shadow-xs disabled:opacity-50"
+              variant="primary"
+              size="sm"
+              isLoading={loading}
             >
-              {loading ? 'Guardando...' : 'Guardar Evento'}
-            </button>
+              Guardar Evento
+            </Button>
           </div>
         </form>
       </div>

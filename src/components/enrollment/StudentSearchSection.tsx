@@ -1,5 +1,6 @@
 import React from 'react';
 import { SearchIcon } from '../../components/common/Icons';
+import { Button } from '../../components/common/Button';
 
 export interface Student {
   id: string;
@@ -81,18 +82,17 @@ export const StudentSearchSection: React.FC<StudentSearchSectionProps> = ({
           )}
         </div>
 
-        <button
+        <Button
           type="button"
+          variant="primary"
+          size="md"
           onClick={onEnroll}
-          disabled={!selectedStudent || !isAvailable || loading}
-          className={`h-9 px-4 rounded-md text-xs font-semibold transition-colors shadow-xs cursor-pointer ${
-            selectedStudent && isAvailable && !loading
-              ? 'bg-[#0F3C6E] hover:bg-[#0A294D] text-white'
-              : 'bg-[#F1F5F9] text-[#94A3B8] cursor-not-allowed border border-[#CBD5E1]'
-          }`}
+          disabled={!selectedStudent || !isAvailable}
+          isLoading={loading}
+          className="h-9 shrink-0"
         >
-          {loading ? 'Inscribiendo...' : 'Confirmar Inscripción'}
-        </button>
+          Confirmar Inscripción
+        </Button>
       </div>
 
       {selectedStudent && (

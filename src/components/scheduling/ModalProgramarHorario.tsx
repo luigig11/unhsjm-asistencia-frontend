@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CloseIcon, ChevronDownIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 import type { Schedule } from './ScheduleWeeklyGrid';
 
 interface ModalProgramarHorarioProps {
@@ -79,13 +80,14 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
           <h3 className="text-sm font-bold text-[#0F172A]">
             {scheduleToEdit ? 'Editar Bloque Horario' : 'Programar Nuevo Horario'}
           </h3>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
+            icon={<CloseIcon className="w-4 h-4" />}
             onClick={onClose}
-            className="p-1 rounded-md text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F1F5F9] cursor-pointer"
-          >
-            <CloseIcon className="w-4 h-4" />
-          </button>
+            className="text-[#94A3B8] hover:text-[#0F172A]"
+          />
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 space-y-3.5 text-xs">
@@ -242,19 +244,21 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
           </div>
 
           <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
-              className="px-3.5 py-1.5 border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-md text-[#475569] font-medium transition-colors cursor-pointer"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="px-3.5 py-1.5 bg-[#0F3C6E] hover:bg-[#0A294D] text-white rounded-md font-semibold transition-colors cursor-pointer shadow-xs"
+              variant="primary"
+              size="sm"
             >
               {scheduleToEdit ? 'Actualizar' : 'Guardar Horario'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

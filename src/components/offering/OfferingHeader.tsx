@@ -1,5 +1,6 @@
 import React from 'react';
 import { PlusIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface AcademicInstance {
   id: string;
@@ -56,14 +57,14 @@ export const OfferingHeader: React.FC<OfferingHeaderProps> = ({
           </p>
         </div>
 
-        <button
-          type="button"
+        <Button
+          variant="primary"
+          size="sm"
+          icon={<PlusIcon className="w-3.5 h-3.5" />}
           onClick={onOpenCreateGroup}
-          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-md bg-[#0F3C6E] hover:bg-[#0A294D] text-white text-xs font-semibold border border-[#0F3C6E] transition-colors shadow-xs cursor-pointer self-start sm:self-auto"
         >
-          <PlusIcon className="w-3.5 h-3.5" />
-          <span>Nuevo Grupo / Sección</span>
-        </button>
+          Nuevo Grupo / Sección
+        </Button>
       </div>
 
       {/* Selector de Instancia Académica */}

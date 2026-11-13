@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '../common/Button';
 
 export interface UserItem {
   id: string;
@@ -131,13 +132,14 @@ export const UserTable: React.FC<UserTableProps> = ({
                   </td>
 
                   <td className="py-3 px-4 text-right">
-                    <button
-                      type="button"
+                    <Button
+                      variant="ghost"
+                      size="xs"
                       onClick={() => onEditUser?.(user)}
-                      className="px-2.5 py-1 text-xs font-semibold text-[#0F3C6E] hover:text-[#1D63B8] hover:bg-[#EBF3FC] rounded transition-colors cursor-pointer"
+                      className="text-[#0F3C6E] hover:text-[#1D63B8]"
                     >
                       Editar
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))

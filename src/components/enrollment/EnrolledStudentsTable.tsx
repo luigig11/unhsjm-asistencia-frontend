@@ -1,5 +1,6 @@
 import React from 'react';
 import { UsersIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface EnrolledStudentItem {
   id: string;
@@ -93,13 +94,14 @@ export const EnrolledStudentsTable: React.FC<EnrolledStudentsTableProps> = ({
                     {formatDate(enr.fechaInscripcion)}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      type="button"
+                    <Button
+                      variant="ghost"
+                      size="xs"
                       onClick={() => onRemoveEnrollment(enr.id)}
-                      className="text-[11px] font-semibold text-[#C81E2B] hover:underline cursor-pointer"
+                      className="text-[#C81E2B] hover:text-[#991B1B] hover:bg-rose-50"
                     >
                       Desinscribir
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))

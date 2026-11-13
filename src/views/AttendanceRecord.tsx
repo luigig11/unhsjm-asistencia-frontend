@@ -21,6 +21,7 @@ import { listarMotivosAusencia } from '../api/catalogos';
 import { listarDocentes } from '../api/docente';
 import { listarSesionesCalendario } from '../api/calendario';
 import { CheckCircleIcon, AlertCircleIcon, ArrowLeftIcon } from '../components/common/Icons';
+import { Button } from '../components/common/Button';
 
 interface AttendanceRecordProps {
   sessionId?: string;
@@ -309,24 +310,24 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
 
           <div className="flex items-center gap-2">
             {onBack && (
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
+                icon={<ArrowLeftIcon className="w-3.5 h-3.5" />}
                 onClick={onBack}
-                className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-[#475569] bg-white border border-[#CBD5E1] hover:bg-slate-50 transition-colors flex items-center gap-1.5 cursor-pointer"
               >
-                <ArrowLeftIcon className="w-3.5 h-3.5" />
-                <span>Volver al Portal Docente</span>
-              </button>
+                Volver al Portal Docente
+              </Button>
             )}
 
             {sessionData?.id_materia_por_grupo && onNavigateToSheet && (
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => onNavigateToSheet(sessionData.id_materia_por_grupo)}
-                className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-[#0F3C6E] bg-[#EBF3FC] border border-[#93C5FD] hover:bg-[#D8E9F9] transition-colors cursor-pointer"
               >
                 Ver Sábana de Asistencia
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -337,13 +338,14 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
               <AlertCircleIcon className="w-4 h-4 text-rose-600 shrink-0" />
               <span>{error}</span>
             </div>
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="xs"
               onClick={cargarDatos}
-              className="px-2.5 py-1 text-xs font-semibold text-rose-700 bg-white border border-rose-300 rounded hover:bg-rose-100 transition-colors shrink-0"
+              className="text-rose-700 border-rose-300 hover:bg-rose-100"
             >
               Reintentar
-            </button>
+            </Button>
           </div>
         )}
 
@@ -400,18 +402,17 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
             </p>
           </div>
 
-          <button
+          <Button
             type="button"
+            variant={saved ? 'success' : 'primary'}
+            size="lg"
             onClick={saveAttendance}
-            disabled={saving || loading}
-            className={`w-full sm:w-auto px-8 py-2.5 rounded-md text-sm font-bold transition-colors cursor-pointer ${
-              saved
-                ? 'bg-[#15803D] text-white hover:bg-[#166534]'
-                : 'bg-[#0F3C6E] hover:bg-[#1D63B8] text-white disabled:opacity-50'
-            }`}
+            isLoading={saving}
+            disabled={loading}
+            className="w-full sm:w-auto px-8"
           >
-            {saving ? 'Guardando en Servidor...' : saved ? '✓ Asistencia Actualizada (Guardar Nuevamente)' : 'Guardar Registro de Asistencia'}
-          </button>
+            {saved ? '✓ Asistencia Actualizada (Guardar Nuevamente)' : 'Guardar Registro de Asistencia'}
+          </Button>
         </div>
       </footer>
 

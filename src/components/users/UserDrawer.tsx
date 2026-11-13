@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from '../common/Button';
 import type { UserItem } from './UserTable';
 import type { OpcionRol, OpcionDireccion } from './UserFilters';
 
@@ -128,14 +129,16 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
               {userToEdit ? 'Editar Usuario' : 'Nuevo Usuario'}
             </h2>
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
             onClick={onClose}
-            className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors cursor-pointer"
+            className="text-slate-400 hover:text-slate-600"
             aria-label="Cerrar panel"
           >
             ✕
-          </button>
+          </Button>
         </div>
 
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -224,28 +227,22 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
                   Género
                 </label>
                 <div className="grid grid-cols-2 gap-1 bg-[#F8FAFC] border border-slate-200 rounded-md p-1">
-                  <button
+                  <Button
                     type="button"
+                    variant={genero === 'F' ? 'primary' : 'ghost'}
+                    size="xs"
                     onClick={() => setGenero('F')}
-                    className={`py-1 text-xs font-semibold rounded text-center transition-colors cursor-pointer ${
-                      genero === 'F'
-                        ? 'bg-[#0F3C6E] text-white'
-                        : 'text-[#475569] hover:text-[#0F172A]'
-                    }`}
                   >
                     Femenino
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
+                    variant={genero === 'M' ? 'primary' : 'ghost'}
+                    size="xs"
                     onClick={() => setGenero('M')}
-                    className={`py-1 text-xs font-semibold rounded text-center transition-colors cursor-pointer ${
-                      genero === 'M'
-                        ? 'bg-[#0F3C6E] text-white'
-                        : 'text-[#475569] hover:text-[#0F172A]'
-                    }`}
                   >
                     Masculino
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -367,28 +364,22 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
                     Régimen Contractual
                   </label>
                   <div className="grid grid-cols-2 gap-2">
-                    <button
+                    <Button
                       type="button"
+                      variant={tipoContratacion === 'FIJO' ? 'primary' : 'secondary'}
+                      size="sm"
                       onClick={() => setTipoContratacion('FIJO')}
-                      className={`py-1.5 text-xs font-semibold rounded border transition-colors cursor-pointer ${
-                        tipoContratacion === 'FIJO'
-                          ? 'bg-[#0F3C6E] text-white border-[#0F3C6E]'
-                          : 'bg-[#FFFFFF] text-[#475569] border-slate-200 hover:text-[#0F172A]'
-                      }`}
                     >
                       Docente Fijo
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      variant={tipoContratacion === 'TEMPORAL' ? 'primary' : 'secondary'}
+                      size="sm"
                       onClick={() => setTipoContratacion('TEMPORAL')}
-                      className={`py-1.5 text-xs font-semibold rounded border transition-colors cursor-pointer ${
-                        tipoContratacion === 'TEMPORAL'
-                          ? 'bg-[#0F3C6E] text-white border-[#0F3C6E]'
-                          : 'bg-[#FFFFFF] text-[#475569] border-slate-200 hover:text-[#0F172A]'
-                      }`}
                     >
                       Docente Temporal
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -396,21 +387,23 @@ export const UserDrawer: React.FC<UserDrawerProps> = ({
           </div>
 
           <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-2.5">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 rounded-md text-xs font-semibold text-[#0F172A] bg-[#FFFFFF] border border-slate-200 hover:bg-[#F8FAFC] transition-colors cursor-pointer"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              disabled={loading}
-              className="px-4 py-2 rounded-md text-xs font-semibold text-white bg-[#0F3C6E] hover:bg-[#0A294D] border border-[#0F3C6E] transition-colors cursor-pointer disabled:opacity-50"
+              variant="primary"
+              size="sm"
+              isLoading={loading}
             >
-              {loading ? 'Guardando...' : 'Guardar Expediente'}
-            </button>
+              Guardar Expediente
+            </Button>
           </div>
         </form>
       </div>

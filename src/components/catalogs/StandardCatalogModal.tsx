@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from '../common/Button';
 
 export interface CatalogItem {
   id: string;
@@ -71,14 +72,16 @@ export const StandardCatalogModal: React.FC<StandardCatalogModalProps> = ({
               {itemToEdit ? `Editar ${catalogTitle}` : `Nuevo Registro · ${catalogTitle}`}
             </h3>
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
             onClick={onClose}
-            className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors cursor-pointer"
+            className="text-slate-400 hover:text-slate-600"
             aria-label="Cerrar modal"
           >
             ✕
-          </button>
+          </Button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -134,21 +137,23 @@ export const StandardCatalogModal: React.FC<StandardCatalogModalProps> = ({
           </div>
 
           <div className="pt-4 flex items-center justify-end gap-2.5 border-t border-slate-100">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 rounded-md text-xs font-semibold text-[#0F172A] bg-[#FFFFFF] border border-slate-200 hover:bg-[#F8FAFC] transition-colors cursor-pointer"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              disabled={loading}
-              className="px-4 py-2 rounded-md text-xs font-semibold text-white bg-[#0F3C6E] hover:bg-[#0A294D] border border-[#0F3C6E] transition-colors cursor-pointer disabled:opacity-50"
+              variant="primary"
+              size="sm"
+              isLoading={loading}
             >
-              {loading ? 'Guardando...' : 'Guardar Registro'}
-            </button>
+              Guardar Registro
+            </Button>
           </div>
         </form>
       </div>

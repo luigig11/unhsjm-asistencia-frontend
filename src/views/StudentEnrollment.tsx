@@ -10,6 +10,7 @@ import {
 } from '../api/calendario';
 import { listarEstudiantes } from '../api/estudiante';
 import { AlertCircleIcon } from '../components/common/Icons';
+import { Button } from '../components/common/Button';
 
 export const StudentEnrollment: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -199,13 +200,14 @@ export const StudentEnrollment: React.FC = () => {
             <AlertCircleIcon className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{error}</span>
           </div>
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="xs"
             onClick={cargarInscripciones}
-            className="px-2.5 py-1 text-xs font-semibold text-rose-700 bg-white border border-rose-300 rounded hover:bg-rose-100 transition-colors shrink-0"
+            className="text-rose-700 border-rose-300 hover:bg-rose-100"
           >
             Reintentar
-          </button>
+          </Button>
         </div>
       )}
 

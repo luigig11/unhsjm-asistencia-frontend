@@ -1,5 +1,6 @@
 import React from 'react';
 import { PlusIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface GroupSubject {
   id: string;
@@ -47,14 +48,14 @@ export const GroupSubjectTable: React.FC<GroupSubjectTableProps> = ({
         </div>
 
         {selectedGroupCode && (
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
+            icon={<PlusIcon className="w-3.5 h-3.5" />}
             onClick={onOpenAddSubject}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#0F3C6E] bg-[#F8FAFC] hover:bg-[#0F3C6E] hover:text-white border border-[#CBD5E1] rounded-md transition-colors cursor-pointer shadow-none self-start sm:self-auto"
           >
-            <PlusIcon className="w-3.5 h-3.5" />
-            <span>Asignar Materia</span>
-          </button>
+            Asignar Materia
+          </Button>
         )}
       </div>
 
@@ -112,22 +113,22 @@ export const GroupSubjectTable: React.FC<GroupSubjectTableProps> = ({
                     <td className="px-4 py-3 text-right">
                       <div className="inline-flex items-center gap-1.5 justify-end">
                         {onNavigateSchedule && (
-                          <button
-                            type="button"
+                          <Button
+                            variant="outline"
+                            size="xs"
                             onClick={onNavigateSchedule}
-                            className="px-2.5 py-1 text-[11px] font-semibold text-[#1D63B8] hover:bg-[#EBF3FC] rounded border border-[#1D63B8]/30 transition-colors cursor-pointer"
                           >
                             Horario
-                          </button>
+                          </Button>
                         )}
                         {onNavigateEnrollment && (
-                          <button
-                            type="button"
+                          <Button
+                            variant="secondary"
+                            size="xs"
                             onClick={onNavigateEnrollment}
-                            className="px-2.5 py-1 text-[11px] font-semibold text-[#0F3C6E] hover:bg-[#F1F5F9] rounded border border-[#CBD5E1] transition-colors cursor-pointer"
                           >
                             Inscribir
-                          </button>
+                          </Button>
                         )}
                       </div>
                     </td>

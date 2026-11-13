@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MailIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 interface PasswordRecoveryModalProps {
   isOpen: boolean;
@@ -66,14 +67,16 @@ export const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({
             </h3>
           </div>
           {/* Botón de cierre en la esquina */}
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
             onClick={handleClose}
-            className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            className="text-slate-400 hover:text-slate-600"
             aria-label="Cerrar modal"
           >
             ✕
-          </button>
+          </Button>
         </div>
 
         {/* Formulario de recuperación */}
@@ -132,27 +135,25 @@ export const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({
 
           {/* Fila de botones de acción */}
           <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
-            {/* Botón cancelar */}
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="md"
               onClick={handleClose}
-              className="sm:w-1/2 py-2 px-4 rounded-md text-xs font-semibold text-[#0F172A] bg-[#FFFFFF] border border-slate-200 hover:bg-[#F8FAFC] transition-colors"
+              className="sm:w-1/2"
             >
               Cancelar
-            </button>
+            </Button>
 
-            {/* Botón enviar */}
-            <button
+            <Button
               type="submit"
-              disabled={isSubmitting}
-              className={`sm:w-1/2 py-2 px-4 rounded-md text-xs font-semibold text-white border transition-colors ${
-                isSubmitting
-                  ? 'bg-[#1D63B8] border-[#1D63B8] cursor-wait'
-                  : 'bg-[#0F3C6E] border-[#0F3C6E] hover:bg-[#0A294D]'
-              }`}
+              variant="primary"
+              size="md"
+              isLoading={isSubmitting}
+              className="sm:w-1/2"
             >
-              {isSubmitting ? 'Enviando...' : 'Enviar instrucciones'}
-            </button>
+              Enviar instrucciones
+            </Button>
           </div>
         </form>
 

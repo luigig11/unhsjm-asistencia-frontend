@@ -7,6 +7,7 @@ import {
   AlertCircleIcon,
   CheckCircleIcon,
 } from '../common/Icons';
+import { Button } from '../common/Button';
 import { useAuth } from '../../context/AuthContext';
 import { ApiError } from '../../api/client';
 
@@ -260,24 +261,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           </div>
 
           <div className="pt-2">
-            <button
+            <Button
               type="submit"
-              disabled={isSubmitting}
-              className={`w-full py-2.5 px-4 rounded-md text-sm font-semibold text-white border transition-colors flex items-center justify-center gap-2 ${
-                isSubmitting
-                  ? 'bg-[#1D63B8] border-[#1D63B8] cursor-wait'
-                  : 'bg-[#0F3C6E] border-[#0F3C6E] hover:bg-[#0A294D] active:bg-[#0A294D]'
-              }`}
+              variant="primary"
+              size="lg"
+              isLoading={isSubmitting}
+              className="w-full"
             >
-              {isSubmitting ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Iniciando sesión...</span>
-                </>
-              ) : (
-                <span>Iniciar Sesión</span>
-              )}
-            </button>
+              Iniciar Sesión
+            </Button>
           </div>
         </form>
       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { PlusIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface SchoolPeriod {
   id: string;
@@ -67,14 +68,15 @@ export const PeriodHeader: React.FC<PeriodHeaderProps> = ({
             </select>
           </label>
 
-          <button
-            type="button"
+          <Button
+            variant="primary"
+            size="sm"
+            icon={<PlusIcon className="w-3.5 h-3.5" />}
             onClick={onOpenEventModal}
-            className="h-9 px-3.5 rounded-md bg-[#0F3C6E] hover:bg-[#0A294D] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+            className="h-9"
           >
-            <PlusIcon className="w-3.5 h-3.5" />
-            <span>Registrar Evento</span>
-          </button>
+            Registrar Evento
+          </Button>
         </div>
       </header>
 

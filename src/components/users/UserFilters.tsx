@@ -1,5 +1,6 @@
 import React from 'react';
 import { SearchIcon, PlusIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 
 export interface OpcionRol {
   id: string;
@@ -91,14 +92,15 @@ export const UserFilters: React.FC<UserFiltersProps> = ({
         </div>
       </div>
 
-      <button
-        type="button"
+      <Button
+        variant="primary"
+        size="md"
+        icon={<PlusIcon className="w-4 h-4" />}
         onClick={onOpenCreateDrawer}
-        className="px-4 py-2 rounded-md text-xs font-semibold text-white bg-[#0F3C6E] hover:bg-[#0A294D] border border-[#0F3C6E] flex items-center justify-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-xs"
+        className="shrink-0"
       >
-        <PlusIcon className="w-4 h-4" />
-        <span>Nuevo Usuario</span>
-      </button>
+        Nuevo Usuario
+      </Button>
     </div>
   );
 };

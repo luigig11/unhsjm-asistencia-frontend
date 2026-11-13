@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CloseIcon, ChevronDownIcon } from '../common/Icons';
+import { Button } from '../common/Button';
 import type { PlanAcademicoItem } from './PlanCard';
 
 interface ModalPlanAcademicoProps {
@@ -67,13 +68,14 @@ export const ModalPlanAcademico: React.FC<ModalPlanAcademicoProps> = ({
               Registra un nuevo programa curricular en la institución
             </p>
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
+            icon={<CloseIcon className="w-4 h-4" />}
             onClick={onClose}
-            className="p-1 rounded-md text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F1F5F9] cursor-pointer"
-          >
-            <CloseIcon className="w-4 h-4" />
-          </button>
+            className="text-[#94A3B8] hover:text-[#0F172A]"
+          />
         </div>
 
         {/* Formulario */}
@@ -218,19 +220,21 @@ export const ModalPlanAcademico: React.FC<ModalPlanAcademicoProps> = ({
 
           {/* Botones de acción */}
           <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
-              className="px-3.5 py-1.5 border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-md text-[#475569] font-medium transition-colors cursor-pointer"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="px-4 py-1.5 bg-[#0F3C6E] hover:bg-[#0A294D] text-white rounded-md font-semibold transition-colors cursor-pointer shadow-xs"
+              variant="primary"
+              size="sm"
             >
               Crear Plan Académico
-            </button>
+            </Button>
           </div>
         </form>
       </div>

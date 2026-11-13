@@ -8,6 +8,7 @@ import type { GroupSubject } from '../components/offering/GroupSubjectTable';
 import { ModalCrearGrupo } from '../components/offering/ModalCrearGrupo';
 import { ModalAsignarMateria } from '../components/offering/ModalAsignarMateria';
 import type { SubjectOption, TeacherOption } from '../components/offering/ModalAsignarMateria';
+import { Button } from '../components/common/Button';
 import {
   listarInstanciasAcademicas,
   listarGrupos,
@@ -266,13 +267,14 @@ export const AcademicOffering: React.FC<AcademicOfferingProps> = ({
       {error && (
         <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg flex items-center justify-between">
           <span>{error}</span>
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="xs"
             onClick={loadInitialData}
-            className="px-2.5 py-1 bg-red-100 hover:bg-red-200 rounded text-red-800 font-semibold cursor-pointer"
+            className="text-red-800 bg-red-100 hover:bg-red-200 border-red-200"
           >
             Reintentar
-          </button>
+          </Button>
         </div>
       )}
 
