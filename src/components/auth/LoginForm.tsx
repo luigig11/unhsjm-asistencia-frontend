@@ -42,7 +42,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     const errors: { identifier?: string; password?: string } = {};
 
     if (!identifier.trim()) {
-      errors.identifier = 'Ingresa tu correo institucional o usuario.';
+      errors.identifier = 'Ingresa tu correo institucional.';
     }
 
     if (!password) {
@@ -150,7 +150,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               htmlFor="login-identifier"
               className="block text-xs font-semibold uppercase tracking-wider text-[#475569] mb-1.5"
             >
-              Correo Institucional o Usuario
+              Correo Institucional
             </label>
             <div className="relative">
               <span className="inset-y-0 left-0 pl-3 flex items-center pointer-events-none absolute text-[#94A3B8]">
@@ -167,7 +167,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                     setFieldErrors({ ...fieldErrors, identifier: undefined });
                   }
                 }}
-                placeholder="ej. danilo_rodriguez o admin"
+                placeholder="ej. admin@unhsjm.edu.ni o danilo.rodriguez@unhsjm.edu.ni"
                 className={`w-full pl-9 pr-3.5 py-2.5 text-sm bg-[#FFFFFF] text-[#0F172A] placeholder-[#94A3B8] rounded-md border transition-colors focus:outline-none ${
                   fieldErrors.identifier
                     ? 'border-[#C81E2B] bg-[#FEE2E2]/20 focus:border-[#C81E2B]'
