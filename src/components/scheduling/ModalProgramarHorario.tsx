@@ -2,18 +2,58 @@ import React, { useState, useEffect } from 'react';
 import { CloseIcon, ChevronDownIcon } from '../common/Icons';
 import { Button } from '../common/Button';
 import type { Schedule } from './ScheduleWeeklyGrid';
+import type { MateriaPorGrupoDto } from '../../api/calendario';
+import type { AulaDto } from '../../api/catalogos';
+
+export interface ScheduleSaveData {
+  idMateriaPorGrupo: string;
+  idAula: string;
+  idDia: number;
+  dia: string;
+  horaInicio: string;
+  horaFin: string;
+  grupo: string;
+  materia: string;
+  docente: string;
+  aula: string;
+}
+
+export const DIAS_SEMANA = [
+  { idDia: 1, nombre: 'Lunes' },
+  { idDia: 2, nombre: 'Martes' },
+  { idDia: 3, nombre: 'Miércoles' },
+  { idDia: 4, nombre: 'Jueves' },
+  { idDia: 5, nombre: 'Viernes' },
+  { idDia: 6, nombre: 'Sábado' },
+  { idDia: 7, nombre: 'Domingo' },
+];
+
+export const HORAS_CATALOGO = [
+  '07:00',
+  '08:00',
+  '09:00',
+  '10:00',
+  '11:00',
+  '12:00',
+  '13:00',
+  '14:00',
+  '15:00',
+  '16:00',
+  '17:00',
+  '18:00',
+  '19:00',
+  '20:00',
+  '21:00',
+];
 
 interface ModalProgramarHorarioProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: Omit<Schedule, 'id'>) => void;
+  onSave: (data: ScheduleSaveData) => Promise<void> | void;
   scheduleToEdit?: Schedule | null;
-  dias: string[];
-  horas: string[];
-  grupos: string[];
-  materias: string[];
-  docentes: string[];
-  aulas: string[];
+  materiasPorGrupo: MateriaPorGrupoDto[];
+  aulas: AulaDto[];
+  isSaving?: boolean;
   error?: string;
 }
 
@@ -22,140 +62,147 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
   onClose,
   onSave,
   scheduleToEdit,
-  dias,
-  horas,
-  grupos,
-  materias,
-  docentes,
+  materiasPorGrupo,
   aulas,
-  error,
+  isSaving = false,
+  error: externalError,
 }) => {
-  const [grupo, setGrupo] = useState(grupos[0] || 'IS-01');
-  const [materia, setMateria] = useState(materias[0] || '');
-  const [docente, setDocente] = useState(docentes[0] || '');
-  const [aula, setAula] = useState(aulas[0] || '');
-  const [dia, setDia] = useState(dias[0] || 'Lunes');
-  const [horaInicio, setHoraInicio] = useState(horas[0] || '07:00');
-  const [horaFin, setHoraFin] = useState(horas[2] || '09:00');
+  const [selectedMpgId, setSelectedMpgId] = useState<string>('');
+  const [selectedAulaId, setSelectedAulaId] = useState<string>('');
+  const [selectedDiaId, setSelectedDiaId] = useState<number>(1);
+  const [horaInicio, setHoraInicio] = useState<string>('07:00');
+  const [horaFin, setHoraFin] = useState<string>('09:00');
+  const [localError, setLocalError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+    setLocalError(null);
+
     if (scheduleToEdit) {
-      setGrupo(scheduleToEdit.grupo);
-      setMateria(scheduleToEdit.materia);
-      setDocente(scheduleToEdit.docente);
-      setAula(scheduleToEdit.aula);
-      setDia(scheduleToEdit.dia);
-      setHoraInicio(scheduleToEdit.horaInicio);
-      setHoraFin(scheduleToEdit.horaFin);
+      if (scheduleToEdit.idMateriaPorGrupo) {
+        setSelectedMpgId(scheduleToEdit.idMateriaPorGrupo);
+      } else {
+        const foundMpg = materiasPorGrupo.find(
+          (m) => m.grupoCodigo === scheduleToEdit.grupo || m.materiaNombre === scheduleToEdit.materia
+        );
+        setSelectedMpgId(foundMpg?.id || '');
+      }
+
+      if (scheduleToEdit.idAula) {
+        setSelectedAulaId(scheduleToEdit.idAula);
+      } else {
+        const foundAula = aulas.find((a) => a.codigo === scheduleToEdit.aula || a.nombre === scheduleToEdit.aula);
+        setSelectedAulaId(foundAula?.id || '');
+      }
+
+      const diaObj = DIAS_SEMANA.find((d) => d.nombre.toLowerCase() === scheduleToEdit.dia.toLowerCase());
+      setSelectedDiaId(diaObj?.idDia || scheduleToEdit.idDia || 1);
+      setHoraInicio(scheduleToEdit.horaInicio.slice(0, 5));
+      setHoraFin(scheduleToEdit.horaFin.slice(0, 5));
     } else {
-      setGrupo(grupos[0] || 'ISI-IIIB');
-      setMateria(materias[0] || '');
-      setDocente(docentes[0] || '');
-      setAula(aulas[0] || '');
-      setDia(dias[0] || 'Lunes');
-      setHoraInicio(horas[0] || '07:00');
-      setHoraFin(horas[2] || '09:00');
+      setSelectedMpgId(materiasPorGrupo[0]?.id || '');
+      setSelectedAulaId(aulas[0]?.id || '');
+      setSelectedDiaId(1);
+      setHoraInicio('07:00');
+      setHoraFin('09:00');
     }
-  }, [scheduleToEdit, isOpen, grupos, materias, docentes, aulas, dias, horas]);
+  }, [isOpen, scheduleToEdit, materiasPorGrupo, aulas]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
-      grupo,
-      materia,
-      docente,
-      aula,
-      dia,
-      horaInicio,
-      horaFin,
-    });
+    setLocalError(null);
+
+    if (!selectedMpgId) {
+      setLocalError('Por favor seleccione una materia ofertada con su grupo.');
+      return;
+    }
+    if (!selectedAulaId) {
+      setLocalError('Por favor seleccione un aula física.');
+      return;
+    }
+    if (horaInicio >= horaFin) {
+      setLocalError('La hora de inicio debe ser anterior a la hora de fin.');
+      return;
+    }
+
+    const mpg = materiasPorGrupo.find((m) => m.id === selectedMpgId);
+    const aulaObj = aulas.find((a) => a.id === selectedAulaId);
+    const diaObj = DIAS_SEMANA.find((d) => d.idDia === selectedDiaId);
+
+    const horaInicioFormatted = horaInicio.length === 5 ? `${horaInicio}:00` : horaInicio;
+    const horaFinFormatted = horaFin.length === 5 ? `${horaFin}:00` : horaFin;
+
+    try {
+      await onSave({
+        idMateriaPorGrupo: selectedMpgId,
+        idAula: selectedAulaId,
+        idDia: selectedDiaId,
+        dia: diaObj?.nombre || 'Lunes',
+        horaInicio: horaInicioFormatted,
+        horaFin: horaFinFormatted,
+        grupo: mpg?.grupoCodigo || '',
+        materia: mpg?.materiaNombre || '',
+        docente: mpg?.docenteNombreCompleto || '',
+        aula: aulaObj?.codigo || aulaObj?.nombre || '',
+      });
+      onClose();
+    } catch (err: unknown) {
+      setLocalError(err instanceof Error ? err.message : 'Error al guardar el bloque horario.');
+    }
   };
+
+  const activeError = localError || externalError;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
       <div className="bg-white border border-[#E2E8F0] rounded-lg max-w-lg w-full text-left shadow-none overflow-hidden">
         <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[#0F172A]">
-            {scheduleToEdit ? 'Editar Bloque Horario' : 'Programar Nuevo Horario'}
-          </h3>
+          <div>
+            <h3 className="text-sm font-bold text-[#0F172A]">
+              {scheduleToEdit ? 'Editar Bloque Horario' : 'Programar Nuevo Horario'}
+            </h3>
+            <p className="text-xs text-[#64748B] mt-0.5">
+              Patrón recurrente semanal de clases y asignación física de espacio
+            </p>
+          </div>
           <Button
             type="button"
             variant="ghost"
             size="xs"
             icon={<CloseIcon className="w-4 h-4" />}
             onClick={onClose}
+            disabled={isSaving}
             className="text-[#94A3B8] hover:text-[#0F172A]"
           />
         </div>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-3.5 text-xs">
-          {error && (
+        <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs">
+          {activeError && (
             <div className="p-2.5 rounded-md bg-[#FEE2E2] text-[#B91C1C] border border-[#FCA5A5]">
-              {error}
+              {activeError}
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">Grupo / Sección</label>
-              <div className="relative">
-                <select
-                  value={grupo}
-                  onChange={(e) => setGrupo(e.target.value)}
-                  className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
-                >
-                  {grupos.length === 0 ? (
-                    <option value="">Sin grupos registrados</option>
-                  ) : (
-                    grupos.map((g) => (
-                      <option key={g} value={g}>{g}</option>
-                    ))
-                  )}
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
-                  <ChevronDownIcon className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">Aula Física</label>
-              <div className="relative">
-                <select
-                  value={aula}
-                  onChange={(e) => setAula(e.target.value)}
-                  className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
-                >
-                  {aulas.length === 0 ? (
-                    <option value="">Sin aulas registradas</option>
-                  ) : (
-                    aulas.map((a) => (
-                      <option key={a} value={a}>{a}</option>
-                    ))
-                  )}
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
-                  <ChevronDownIcon className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">Asignatura</label>
+            <label className="font-semibold text-[#475569] block">
+              Grupo y Asignatura Ofertada <span className="text-[#C81E2B]">*</span>
+            </label>
             <div className="relative">
               <select
-                value={materia}
-                onChange={(e) => setMateria(e.target.value)}
+                value={selectedMpgId}
+                onChange={(e) => setSelectedMpgId(e.target.value)}
                 className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
+                required
               >
-                {materias.length === 0 ? (
-                  <option value="">Sin asignaturas registradas</option>
+                {materiasPorGrupo.length === 0 ? (
+                  <option value="">Sin asignaturas ofertadas en los grupos</option>
                 ) : (
-                  materias.map((m) => (
-                    <option key={m} value={m}>{m}</option>
+                  materiasPorGrupo.map((mpg) => (
+                    <option key={mpg.id} value={mpg.id}>
+                      [{mpg.grupoCodigo}] {mpg.materiaCodigo} — {mpg.materiaNombre} ({mpg.docenteNombreCompleto})
+                    </option>
                   ))
                 )}
               </select>
@@ -166,18 +213,23 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
           </div>
 
           <div className="space-y-1">
-            <label className="font-semibold text-[#475569] block">Docente Asignado</label>
+            <label className="font-semibold text-[#475569] block">
+              Aula Física Asignada <span className="text-[#C81E2B]">*</span>
+            </label>
             <div className="relative">
               <select
-                value={docente}
-                onChange={(e) => setDocente(e.target.value)}
+                value={selectedAulaId}
+                onChange={(e) => setSelectedAulaId(e.target.value)}
                 className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
+                required
               >
-                {docentes.length === 0 ? (
-                  <option value="">Sin docentes registrados</option>
+                {aulas.length === 0 ? (
+                  <option value="">Sin aulas registradas</option>
                 ) : (
-                  docentes.map((d) => (
-                    <option key={d} value={d}>{d}</option>
+                  aulas.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.codigo} — {a.nombre} (Cap: {a.capacidad} estudiantes)
+                    </option>
                   ))
                 )}
               </select>
@@ -189,15 +241,19 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
 
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">Día</label>
+              <label className="font-semibold text-[#475569] block">
+                Día de la Semana <span className="text-[#C81E2B]">*</span>
+              </label>
               <div className="relative">
                 <select
-                  value={dia}
-                  onChange={(e) => setDia(e.target.value)}
+                  value={selectedDiaId}
+                  onChange={(e) => setSelectedDiaId(Number(e.target.value))}
                   className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
                 >
-                  {dias.map((d) => (
-                    <option key={d} value={d}>{d}</option>
+                  {DIAS_SEMANA.map((d) => (
+                    <option key={d.idDia} value={d.idDia}>
+                      {d.nombre}
+                    </option>
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
@@ -207,15 +263,19 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
             </div>
 
             <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">Hora Inicio</label>
+              <label className="font-semibold text-[#475569] block">
+                Hora Inicio <span className="text-[#C81E2B]">*</span>
+              </label>
               <div className="relative">
                 <select
                   value={horaInicio}
                   onChange={(e) => setHoraInicio(e.target.value)}
                   className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
                 >
-                  {horas.map((h) => (
-                    <option key={h} value={h}>{h}</option>
+                  {HORAS_CATALOGO.map((h) => (
+                    <option key={h} value={h}>
+                      {h}
+                    </option>
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
@@ -225,15 +285,19 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
             </div>
 
             <div className="space-y-1">
-              <label className="font-semibold text-[#475569] block">Hora Fin</label>
+              <label className="font-semibold text-[#475569] block">
+                Hora Fin <span className="text-[#C81E2B]">*</span>
+              </label>
               <div className="relative">
                 <select
                   value={horaFin}
                   onChange={(e) => setHoraFin(e.target.value)}
                   className="w-full appearance-none px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-md text-[#0F172A] outline-none focus:border-[#1D63B8] cursor-pointer"
                 >
-                  {horas.map((h) => (
-                    <option key={h} value={h}>{h}</option>
+                  {HORAS_CATALOGO.map((h) => (
+                    <option key={h} value={h}>
+                      {h}
+                    </option>
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#475569]">
@@ -249,6 +313,7 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
               variant="secondary"
               size="sm"
               onClick={onClose}
+              disabled={isSaving}
             >
               Cancelar
             </Button>
@@ -256,8 +321,9 @@ export const ModalProgramarHorario: React.FC<ModalProgramarHorarioProps> = ({
               type="submit"
               variant="primary"
               size="sm"
+              isLoading={isSaving}
             >
-              {scheduleToEdit ? 'Actualizar' : 'Guardar Horario'}
+              {scheduleToEdit ? 'Actualizar Horario' : 'Guardar Horario'}
             </Button>
           </div>
         </form>

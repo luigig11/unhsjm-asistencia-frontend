@@ -245,8 +245,23 @@ export const crearMateriaPorGrupo = (data: CreateMateriaPorGrupoDto): Promise<Ma
   return apiClient.post<MateriaPorGrupoDto>('/materias-por-grupo', data);
 };
 
-export const listarCalendarioSemanal = (params: CalendarioSemanalFilterParams): Promise<CalendarioSemanalDto[]> => {
+export const listarCalendarioSemanal = (params?: CalendarioSemanalFilterParams): Promise<CalendarioSemanalDto[]> => {
   return apiClient.get<CalendarioSemanalDto[]>('/calendarios-semanales', params);
+};
+
+export const crearCalendarioSemanal = (data: CreateCalendarioSemanalDto): Promise<CalendarioSemanalDto> => {
+  return apiClient.post<CalendarioSemanalDto>('/calendarios-semanales', data);
+};
+
+export const actualizarCalendarioSemanal = (
+  id: string,
+  data: Partial<CreateCalendarioSemanalDto>
+): Promise<CalendarioSemanalDto> => {
+  return apiClient.put<CalendarioSemanalDto>(`/calendarios-semanales/${id}`, data);
+};
+
+export const eliminarCalendarioSemanal = (id: string): Promise<void> => {
+  return apiClient.delete<void>(`/calendarios-semanales/${id}`);
 };
 
 export const listarSesionesCalendario = (params?: SesionCalendarioFilterParams): Promise<SesionCalendarioDto[]> => {

@@ -2,12 +2,15 @@ import React from 'react';
 import { Button } from '../common/Button';
 
 export interface Schedule {
-  id: number;
+  id: string;
+  idMateriaPorGrupo?: string;
+  idAula?: string;
   grupo: string;
   materia: string;
   docente: string;
   aula: string;
   dia: string;
+  idDia?: number;
   horaInicio: string;
   horaFin: string;
 }
@@ -17,8 +20,8 @@ interface ScheduleWeeklyGridProps {
   hours: string[];
   selectedDay: string;
   getSchedules: (day: string, hour: string) => Schedule[];
-  onEditSchedule: (schedule: Schedule) => void;
-  onDeleteSchedule: (id: number) => void;
+  onEditSchedule?: (schedule: Schedule) => void;
+  onDeleteSchedule: (id: string) => void;
 }
 
 export const ScheduleWeeklyGrid: React.FC<ScheduleWeeklyGridProps> = ({
@@ -105,14 +108,16 @@ export const ScheduleWeeklyGrid: React.FC<ScheduleWeeklyGridProps> = ({
                                 </span>
 
                                 <div className="flex items-center gap-1.5">
-                                  <Button
-                                    variant="ghost"
-                                    size="xs"
-                                    onClick={() => onEditSchedule(item)}
-                                    className="text-[10px] text-[#1D63B8] p-0 hover:underline"
-                                  >
-                                    Editar
-                                  </Button>
+                                  {onEditSchedule && (
+                                    <Button
+                                      variant="ghost"
+                                      size="xs"
+                                      onClick={() => onEditSchedule(item)}
+                                      className="text-[10px] text-[#1D63B8] p-0 hover:underline"
+                                    >
+                                      Editar
+                                    </Button>
+                                  )}
                                   <Button
                                     variant="ghost"
                                     size="xs"
