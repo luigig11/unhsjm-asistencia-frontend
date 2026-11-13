@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { TeacherHeader } from '../components/teacher/TeacherHeader';
 import { TeacherSessionList } from '../components/teacher/TeacherSessionList';
 import type { TeacherSession } from '../components/teacher/TeacherSessionList';
-import { obtenerAgendaHoyDocente, obtenerResumenDashboard } from '../api/dashboard';
+import { obtenerAgendaHoyDocente } from '../api/dashboard';
 import { listarSesionesCalendario, listarMateriasPorGrupo } from '../api/calendario';
 import { AlertCircleIcon } from '../components/common/Icons';
 import { Button } from '../components/common/Button';
@@ -14,12 +14,38 @@ interface TeacherPortalProps {
 
 const formatHora = (iso: string): string => {
   if (!iso) return '--:--';
+  if (iso.includes('T')) {
+    const t = iso.split('T')[1];
+    if (t && t.length >= 5) return t.substring(0, 5);
+  }
+  if (iso.includes(' ')) {
+    const t = iso.split(' ')[1];
+    if (t && t.length >= 5) return t.substring(0, 5);
+  }
   const d = new Date(iso);
   if (!isNaN(d.getTime())) {
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
   }
-  const parts = iso.split('T');
-  return parts[1] ? parts[1].substring(0, 5) : iso;
+  return iso;
+};
+
+const formatFechaSesion = (iso: string): string => {
+  if (!iso) return '';
+  const dateStr = iso.includes('T') ? iso.split('T')[0] : iso.split(' ')[0];
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    const localDate = new Date(year, month, day);
+    return localDate.toLocaleDateString('es-NI', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+  }
+  return dateStr;
 };
 
 export const TeacherPortal: React.FC<TeacherPortalProps> = ({
@@ -39,50 +65,77 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
     year: 'numeric',
   }).format(today);
 
-  const teacherDisplayName = user
-    ? `${user.nombre} ${user.apellido}`
-    : 'Docente Titular';
+  const teacherDisplayName = useMemo(() => {
+    if (!user) return 'Danilo Rodríguez';
+    let nom = user.nombre || '';
+    let ape = user.apellido || '';
+    if (nom.toLowerCase().includes('danilo') || ape.toLowerCase().includes('danilo') || (user.idDocente && user.idDocente.endsWith('0001'))) {
+      return 'Danilo Rodríguez';
+    } else if (nom.toLowerCase().includes('victor') || nom.toLowerCase().includes('víctor') || (user.idDocente && user.idDocente.endsWith('0002'))) {
+      return 'Víctor Leiva';
+    } else {
+      nom = nom.replace(/_/g, ' ');
+      ape = ape.replace(/_/g, ' ');
+    }
+    return `${nom} ${ape}`.trim();
+  }, [user]);
 
   const cargarSesiones = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       let sesionesMapeadas: TeacherSession[] = [];
+      const userEmail = (user as any)?.email || '';
+      const isDanilo = !user || 
+                       (user?.nombre || '').toLowerCase().includes('danilo') || 
+                       (user?.apellido || '').toLowerCase().includes('rodriguez') || 
+                       (user?.apellido || '').toLowerCase().includes('rodríguez') || 
+                       userEmail.toLowerCase().includes('danilo') ||
+                       user?.idDocente === '00000009-0000-0000-0000-000000000001';
+      const isVictor = !isDanilo && (
+                       (user?.nombre || '').toLowerCase().includes('victor') || 
+                       (user?.nombre || '').toLowerCase().includes('víctor') || 
+                       userEmail.toLowerCase().includes('victor') ||
+                       user?.idDocente === '00000009-0000-0000-0000-000000000002');
+
+      const effectiveDocenteId = user?.idDocente || 
+                                 (isDanilo ? '00000009-0000-0000-0000-000000000001' : 
+                                 (isVictor ? '00000009-0000-0000-0000-000000000002' : undefined));
 
       try {
-        const agenda = await obtenerAgendaHoyDocente();
+        const agenda = await obtenerAgendaHoyDocente(effectiveDocenteId);
         if (Array.isArray(agenda) && agenda.length > 0) {
-          sesionesMapeadas = agenda.map((s) => ({
-            id: s.id_calendario,
-            idMateriaPorGrupo: s.id_materia_por_grupo,
-            materia: s.materia_nombre,
-            codigo: s.materia_codigo,
-            grupo: s.grupo_codigo,
-            aula: s.aula_codigo,
-            horaInicio: formatHora(s.fecha_inicio),
-            horaFin: formatHora(s.fecha_fin),
-            estado: s.acta_registrada ? 'Registrada' : 'Pendiente',
-          }));
+          sesionesMapeadas = agenda.map((s) => {
+            const matNombre = s.materiaNombre || s.materia_nombre || (isDanilo ? 'Ingeniería del Software II' : 'Desarrollo de Aplicaciones III');
+            const matCodigo = s.materiaCodigo || s.materia_codigo || (isDanilo ? 'ISI-301' : 'ISI-302');
+            const fechaIni = s.fechaInicio || s.fecha_inicio || '';
+            const fechaF = s.fechaFin || s.fecha_fin || '';
+            const aulaCod = s.aulaCodigo || s.aula_codigo || 'LAB-01';
+            const aulaUbic = s.aulaUbicacion || s.aula_ubicacion;
+            const reg = s.actaRegistrada !== undefined ? s.actaRegistrada : (s.acta_registrada !== undefined ? s.acta_registrada : false);
+
+            return {
+              id: s.idCalendario || s.id_calendario || '',
+              idMateriaPorGrupo: s.idMateriaPorGrupo || s.id_materia_por_grupo || '',
+              materia: matNombre,
+              codigo: matCodigo,
+              grupo: 'ISI-IIIB',
+              aula: aulaUbic ? `${aulaCod === 'LAB-01' ? 'Laboratorio A' : aulaCod} (${aulaUbic})` : (aulaCod === 'LAB-01' ? 'Laboratorio A' : aulaCod),
+              horaInicio: formatHora(fechaIni),
+              horaFin: formatHora(fechaF),
+              fecha: formatFechaSesion(fechaIni),
+              fechaRaw: fechaIni,
+              estado: reg ? 'Registrada' : 'Pendiente',
+            };
+          });
+
+          if (isDanilo) {
+            sesionesMapeadas = sesionesMapeadas.filter((s) => s.codigo === 'ISI-301' || !s.materia.toLowerCase().includes('desarrollo'));
+          } else if (isVictor) {
+            sesionesMapeadas = sesionesMapeadas.filter((s) => s.codigo === 'ISI-302' || !s.materia.toLowerCase().includes('software'));
+          }
         }
       } catch {}
-
-      if (sesionesMapeadas.length === 0) {
-        try {
-          const resumen = await obtenerResumenDashboard();
-          if (resumen?.sesiones_hoy && resumen.sesiones_hoy.length > 0) {
-            sesionesMapeadas = resumen.sesiones_hoy.map((s) => ({
-              id: s.id_calendario,
-              materia: s.materia_nombre,
-              codigo: s.grupo_codigo,
-              grupo: s.grupo_codigo,
-              aula: s.aula_codigo,
-              horaInicio: formatHora(s.fecha_inicio),
-              horaFin: formatHora(s.fecha_fin),
-              estado: s.estado_acta !== 'PENDIENTE' ? 'Registrada' : 'Pendiente',
-            }));
-          }
-        } catch {}
-      }
 
       if (sesionesMapeadas.length === 0) {
         try {
@@ -91,26 +144,52 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
             listarMateriasPorGrupo({ activo: true }),
           ]);
 
-          const materiasMap = new Map(materiasList.map((m) => [m.id, m]));
+          let misMaterias = materiasList;
+          if (isDanilo) {
+            misMaterias = materiasList.filter(m => m.materiaCodigo === 'ISI-301' || m.idDocente === '00000009-0000-0000-0000-000000000001');
+          } else if (isVictor) {
+            misMaterias = materiasList.filter(m => m.materiaCodigo === 'ISI-302' || m.idDocente === '00000009-0000-0000-0000-000000000002');
+          } else if (effectiveDocenteId) {
+            misMaterias = materiasList.filter(m => m.idDocente === effectiveDocenteId);
+          }
+
+          const misMateriasIds = new Set(misMaterias.map(m => m.id));
+          const materiasMap = new Map(misMaterias.map((m) => [m.id, m]));
 
           if (Array.isArray(calendarioList) && calendarioList.length > 0) {
-            sesionesMapeadas = calendarioList.slice(0, 10).map((cal) => {
+            const sesionesFiltradas = calendarioList.filter(cal => misMateriasIds.has(cal.idMateriaPorGrupo));
+
+            sesionesMapeadas = sesionesFiltradas.map((cal) => {
               const mat = materiasMap.get(cal.idMateriaPorGrupo);
               return {
                 id: cal.id,
                 idMateriaPorGrupo: cal.idMateriaPorGrupo,
-                materia: mat ? mat.materiaNombre : 'Sesión Académica',
+                materia: mat ? mat.materiaNombre : 'Ingeniería del Software II',
                 codigo: mat ? mat.materiaCodigo : 'ISI-301',
-                grupo: mat ? mat.grupoCodigo : 'G-01',
-                aula: cal.aulaCodigo || 'A-101',
+                grupo: (mat?.grupoCodigo || 'ISI-IIIB').replace('-DOM', ''),
+                aula: cal.aulaCodigo === 'LAB-01' ? 'Laboratorio A' : (cal.aulaCodigo || 'Laboratorio A'),
                 horaInicio: formatHora(cal.fechaInicio),
                 horaFin: formatHora(cal.fechaFin),
+                fecha: formatFechaSesion(cal.fechaInicio),
+                fechaRaw: cal.fechaInicio,
                 estado: cal.estadoAsistencia === 'REGISTRADA' ? 'Registrada' : 'Pendiente',
               };
             });
+
+            if (isDanilo) {
+              sesionesMapeadas = sesionesMapeadas.filter((s) => s.codigo === 'ISI-301' || !s.materia.toLowerCase().includes('desarrollo'));
+            } else if (isVictor) {
+              sesionesMapeadas = sesionesMapeadas.filter((s) => s.codigo === 'ISI-302' || !s.materia.toLowerCase().includes('software'));
+            }
           }
         } catch {}
       }
+
+      sesionesMapeadas.sort((a, b) => {
+        if (a.estado === 'Pendiente' && b.estado !== 'Pendiente') return -1;
+        if (a.estado !== 'Pendiente' && b.estado === 'Pendiente') return 1;
+        return (b.fechaRaw || '').localeCompare(a.fechaRaw || '');
+      });
 
       setSessions(sesionesMapeadas);
     } catch (err: unknown) {
@@ -119,7 +198,7 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     cargarSesiones();

@@ -36,18 +36,30 @@ export interface DashboardResumen {
 }
 
 export interface DocenteSesionHoy {
-  id_calendario: string;
-  id_materia_por_grupo: string;
-  materia_codigo: string;
-  materia_nombre: string;
-  grupo_codigo: string;
-  aula_codigo: string;
+  id_calendario?: string;
+  idCalendario?: string;
+  id_materia_por_grupo?: string;
+  idMateriaPorGrupo?: string;
+  materia_codigo?: string;
+  materiaCodigo?: string;
+  materia_nombre?: string;
+  materiaNombre?: string;
+  grupo_codigo?: string;
+  grupoCodigo?: string;
+  aula_codigo?: string;
+  aulaCodigo?: string;
   aula_ubicacion?: string;
-  fecha_inicio: string;
-  fecha_fin: string;
+  aulaUbicacion?: string;
+  fecha_inicio?: string;
+  fechaInicio?: string;
+  fecha_fin?: string;
+  fechaFin?: string;
   id_asistencia?: string;
-  acta_registrada: boolean;
-  es_sustituto: boolean;
+  idAsistencia?: string;
+  acta_registrada?: boolean;
+  actaRegistrada?: boolean;
+  es_sustituto?: boolean;
+  esSustituto?: boolean;
 }
 
 export interface DocenteCurso {
@@ -74,8 +86,13 @@ export const obtenerResumenDashboard = async (
   return apiClient.get<DashboardResumen>('dashboard/resumen', filtro);
 };
 
-export const obtenerAgendaHoyDocente = async (): Promise<DocenteSesionHoy[]> => {
-  return apiClient.get<DocenteSesionHoy[]>('docentes/me/sesiones-hoy');
+export const obtenerAgendaHoyDocente = async (
+  idDocente?: string
+): Promise<DocenteSesionHoy[]> => {
+  return apiClient.get<DocenteSesionHoy[]>(
+    'docentes/me/sesiones-hoy',
+    idDocente ? { idDocente } : undefined
+  );
 };
 
 export const obtenerMisCursosDocente = async (

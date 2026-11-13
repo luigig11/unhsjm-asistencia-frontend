@@ -28,7 +28,7 @@ export const TeacherHeader: React.FC<TeacherHeaderProps> = ({
           Portal del Docente
         </h1>
         <p className="text-xs text-[#475569] mt-0.5">
-          Bienvenido(a), <span className="font-semibold text-[#0F3C6E]">{teacherName}</span>. Agenda académica y pase de lista de tus sesiones programadas para hoy.
+          Bienvenido(a), <span className="font-semibold text-[#0F3C6E]">{teacherName}</span>. Agenda académica y pase de lista de tus sesiones del cuatrimestre.
         </p>
       </div>
 
@@ -36,7 +36,7 @@ export const TeacherHeader: React.FC<TeacherHeaderProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-white border border-[#E2E8F0] rounded-lg p-3.5 flex items-center justify-between">
           <div>
-            <p className="text-xs text-[#64748B] font-medium">Sesiones de Hoy</p>
+            <p className="text-xs text-[#64748B] font-medium">Sesiones Programadas</p>
             <p className="text-2xl font-bold text-[#0F172A] mt-1">{totalSessions}</p>
           </div>
           <div className="w-9 h-9 rounded-md bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center text-[#0F3C6E]">

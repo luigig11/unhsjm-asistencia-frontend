@@ -14,6 +14,8 @@ export interface TeacherSession {
   horaFin: string;
   estado: SessionStatus;
   idMateriaPorGrupo?: string;
+  fecha?: string;
+  fechaRaw?: string;
 }
 
 interface TeacherSessionListProps {
@@ -36,10 +38,10 @@ export const TeacherSessionList: React.FC<TeacherSessionListProps> = ({
       <div className="p-4 sm:p-5 border-b border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-sm font-bold text-[#0F172A]">
-            Mis Sesiones de Hoy
+            Mis Sesiones de Clase (Turno Dominical)
           </h2>
           <p className="text-xs text-[#64748B] mt-0.5">
-            Clases programadas para la jornada. Selecciona una sesión para pasar asistencia.
+            Agenda académica y pase de lista de tus sesiones programadas para el ciclo.
           </p>
         </div>
 
@@ -87,13 +89,18 @@ export const TeacherSessionList: React.FC<TeacherSessionListProps> = ({
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="flex items-center gap-1.5 mb-1">
+                      <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                         <span className="font-mono text-[11px] font-bold text-[#0F3C6E] bg-[#EBF3FC] px-1.5 py-0.5 rounded border border-[#1D63B8]/20">
                           {session.codigo}
                         </span>
                         <span className="text-[11px] font-semibold text-[#475569] bg-[#F8FAFC] px-1.5 py-0.5 rounded border border-[#E2E8F0]">
                           Grupo {session.grupo}
                         </span>
+                        {session.fecha && (
+                          <span className="text-[11px] font-medium text-[#1D63B8] bg-[#EFF6FF] px-1.5 py-0.5 rounded border border-[#BFDBFE]">
+                            {session.fecha}
+                          </span>
+                        )}
                       </div>
                       <h3 className="text-sm font-bold text-[#0F172A] leading-snug">
                         {session.materia}
