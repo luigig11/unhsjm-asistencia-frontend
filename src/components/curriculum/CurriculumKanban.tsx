@@ -5,7 +5,7 @@ import type { SubjectMalla } from './SubjectCard';
 
 export interface CicloAcademicoGroup {
   id: string;
-  ciclo_nombre: string; // ej. Primer Año (Ciclo I), Segundo Año (Ciclo II)
+  ciclo_nombre: string;
   orden: number;
   bloques: BloquePeriodo[];
 }
@@ -25,7 +25,6 @@ export const CurriculumKanban: React.FC<CurriculumKanbanProps> = ({
     <div className="p-6 space-y-8 overflow-x-auto">
       {ciclos.map((ciclo) => (
         <section key={ciclo.id} className="space-y-3 text-left">
-          {/* Título del Ciclo / Año */}
           <div className="flex items-center gap-2.5 pb-2 border-b border-[#E2E8F0]">
             <div className="w-2 h-4 bg-[#0F3C6E] rounded-xs" />
             <h2 className="text-sm font-bold uppercase tracking-wider text-[#0F172A]">
@@ -36,7 +35,6 @@ export const CurriculumKanban: React.FC<CurriculumKanbanProps> = ({
             </span>
           </div>
 
-          {/* Grilla horizontal de columnas (Trimestres del ciclo) */}
           <div className="flex gap-4 overflow-x-auto pb-2">
             {ciclo.bloques.map((bloque) => (
               <PeriodColumn

@@ -6,10 +6,10 @@ import { Button } from '../common/Button';
 
 export interface BloquePeriodo {
   id: string;
-  nombre: string; // ej. Trimestre I, Trimestre II
-  duracion_semanas: number; // ej. 14 semanas
-  duracion_meses: number; // ej. 3 meses
-  bloque_predecesor?: string; // ej. "Trimestre I"
+  nombre: string;
+  duracion_semanas: number;
+  duracion_meses: number;
+  bloque_predecesor?: string;
   materias: SubjectMalla[];
 }
 
@@ -26,7 +26,6 @@ export const PeriodColumn: React.FC<PeriodColumnProps> = ({
 }) => {
   return (
     <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg p-3 flex flex-col min-w-[280px] max-w-[320px] shrink-0 text-left">
-      {/* Cabecera del Bloque/Columna */}
       <div className="pb-2.5 mb-2.5 border-b border-[#E2E8F0]">
         <div className="flex items-center justify-between">
           <h4 className="text-xs font-bold text-[#0F172A] uppercase tracking-wide">
@@ -37,7 +36,6 @@ export const PeriodColumn: React.FC<PeriodColumnProps> = ({
           </span>
         </div>
 
-        {/* Subtítulo del bloque: duracion_semanas, duracion_meses y bloque predecesor */}
         <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px] text-[#475569]">
           <span>{bloque.duracion_semanas} sem.</span>
           <span>•</span>
@@ -53,7 +51,6 @@ export const PeriodColumn: React.FC<PeriodColumnProps> = ({
         </div>
       </div>
 
-      {/* Lista de Asignaturas del Bloque */}
       <div className="space-y-2.5 flex-1 min-h-[120px]">
         {bloque.materias.map((materia) => (
           <SubjectCard
@@ -70,7 +67,6 @@ export const PeriodColumn: React.FC<PeriodColumnProps> = ({
         )}
       </div>
 
-      {/* Botón '+ Agregar Asignatura' que abre el Modal A */}
       <Button
         variant="outline"
         size="sm"

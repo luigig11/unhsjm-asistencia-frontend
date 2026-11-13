@@ -44,8 +44,8 @@ export const AttendanceSheet: React.FC<AttendanceSheetProps> = ({
   const [students, setStudents] = useState<SheetStudent[]>([]);
 
   const [search, setSearch] = useState<string>('');
-  const [group, setGroup] = useState<string>('ISI-301');
-  const [period, setPeriod] = useState<string>('Año Lectivo 2026');
+  const [group, setGroup] = useState<string>('');
+  const [period, setPeriod] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('Todos');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -86,7 +86,8 @@ export const AttendanceSheet: React.FC<AttendanceSheetProps> = ({
       setSabanaData(data);
 
       if (data?.curso) {
-        setGroup(data.curso.grupo_codigo || 'ISI-301');
+        setGroup(data.curso.grupo_codigo || '');
+        setPeriod(data.curso.instancia_nombre || '');
       }
 
       if (Array.isArray(data?.sesiones_columnas)) {

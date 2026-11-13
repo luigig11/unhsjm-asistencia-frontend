@@ -3,27 +3,14 @@ import { CloseIcon } from '../common/Icons';
 import { Button, Input, Select } from '../common';
 import type { SubjectMalla } from './SubjectCard';
 
-const MATERIAS_CATALOGO = [
-  { id: 'mat-ing-tec', codigo: 'ING-101', nombre: 'Inglés Técnico' },
-  { id: 'mat-fts', codigo: 'FTS-101', nombre: 'Fundamentos de Tecnología y Sistemas' },
-  { id: 'mat-mat-intro', codigo: 'MAT-100', nombre: 'Matemática Introductoria' },
-  { id: 'mat-tec-com', codigo: 'COM-101', nombre: 'Técnicas y Estrategias de Comunicación' },
-  { id: 'mat-filo', codigo: 'HUM-101', nombre: 'Filosofía' },
-  { id: 'mat-hist-nic', codigo: 'HUM-102', nombre: 'Historia de Nicaragua' },
-  { id: 'mat-fund-prog', codigo: 'PROG-101', nombre: 'Fundamentos de Programación' },
-  { id: 'mat-intro-elec', codigo: 'ELC-101', nombre: 'Introducción a la Electrónica' },
-  { id: 'mat-calc-1', codigo: 'MAT-101', nombre: 'Cálculo I' },
-  { id: 'mat-comp-red', codigo: 'COM-102', nombre: 'Composición y Redacción Técnica' },
-  { id: 'mat-cur-int', codigo: 'CLI-101', nombre: 'Curso Libre de Integración' },
-  { id: 'mat-cur-hum-1', codigo: 'CLH-101', nombre: 'Curso Libre General y Humanístico I' },
-];
-
 interface ModalMallaCurricularProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: Partial<SubjectMalla>) => void;
   initialData?: SubjectMalla | null;
   bloqueNombre?: string;
+  materiasDisponibles?: Array<{ id: string; codigo: string; nombre: string }>;
+  prerequisitosDisponibles?: Array<{ codigo: string; nombre: string }>;
 }
 
 export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
@@ -32,6 +19,8 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
   onSave,
   initialData,
   bloqueNombre = 'Período',
+  materiasDisponibles = [],
+  prerequisitosDisponibles = [],
 }) => {
   const [selectedMateriaId, setSelectedMateriaId] = useState<string>('');
   const [creditos, setCreditos] = useState<number>(4);
@@ -43,7 +32,7 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
 
   useEffect(() => {
     if (initialData) {
-      setSelectedMateriaId(initialData.materia_id || 'mat-1');
+      setSelectedMateriaId(initialData.materia_id || materiasDisponibles[0]?.id || '');
       setCreditos(initialData.creditos);
       setHoras(initialData.cantidad_horas_materia);
       setEncuentrosTotales(initialData.encuentros_totales);
@@ -51,7 +40,7 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
       setObligatoria(initialData.obligatoria);
       setSelectedPrerequisitos(initialData.prerequisitos || []);
     } else {
-      setSelectedMateriaId(MATERIAS_CATALOGO[0].id);
+      setSelectedMateriaId(materiasDisponibles[0]?.id || '');
       setCreditos(4);
       setHoras(60);
       setEncuentrosTotales(12);
@@ -59,7 +48,7 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
       setObligatoria(true);
       setSelectedPrerequisitos([]);
     }
-  }, [initialData, isOpen]);
+  }, [initialData, isOpen, materiasDisponibles]);
 
   if (!isOpen) return null;
 
@@ -73,12 +62,14 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const materiaInfo = MATERIAS_CATALOGO.find((m) => m.id === selectedMateriaId) || MATERIAS_CATALOGO[0];
+    const materiaInfo = materiasDisponibles.find((m) => m.id === selectedMateriaId);
+    if (!materiaInfo && !initialData) return;
+
     onSave({
       id: initialData?.id || `sub-${Date.now()}`,
-      materia_id: materiaInfo.id,
-      codigo: materiaInfo.codigo,
-      nombre: materiaInfo.nombre,
+      materia_id: materiaInfo?.id || initialData?.materia_id || '',
+      codigo: materiaInfo?.codigo || initialData?.codigo || '',
+      nombre: materiaInfo?.nombre || initialData?.nombre || '',
       creditos,
       cantidad_horas_materia: horas,
       encuentros_totales: encuentrosTotales,
@@ -118,11 +109,18 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
             value={selectedMateriaId}
             onChange={(e) => setSelectedMateriaId(e.target.value)}
           >
-            {MATERIAS_CATALOGO.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.codigo} — {m.nombre}
-              </option>
-            ))}
+            {materiasDisponibles.length === 0 ? (
+              <option value="">-- Sin asignaturas disponibles en catálogo --</option>
+            ) : (
+              <>
+                <option value="">-- Seleccionar asignatura --</option>
+                {materiasDisponibles.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.codigo} — {m.nombre}
+                  </option>
+                ))}
+              </>
+            )}
           </Select>
 
           <div className="grid grid-cols-2 gap-3">
@@ -199,23 +197,29 @@ export const ModalMallaCurricular: React.FC<ModalMallaCurricularProps> = ({
             <p className="text-[11px] text-[#94A3B8]">
               Selecciona las materias que deben ser aprobadas previamente:
             </p>
-            <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md">
-              {MATERIAS_CATALOGO.map((m) => {
-                const isSelected = selectedPrerequisitos.includes(m.codigo);
-                return (
-                  <Button
-                    key={m.id}
-                    type="button"
-                    variant={isSelected ? 'primary' : 'secondary'}
-                    size="xs"
-                    onClick={() => togglePrerequisito(m.codigo)}
-                    className="font-mono text-[10px]"
-                  >
-                    {isSelected ? `✓ ${m.codigo}` : m.codigo}
-                  </Button>
-                );
-              })}
-            </div>
+            {prerequisitosDisponibles.length === 0 ? (
+              <p className="text-[11px] text-[#94A3B8] italic p-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md">
+                No hay materias previas registradas en la malla para asignar como prerrequisito.
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md">
+                {prerequisitosDisponibles.map((m) => {
+                  const isSelected = selectedPrerequisitos.includes(m.codigo);
+                  return (
+                    <Button
+                      key={m.codigo}
+                      type="button"
+                      variant={isSelected ? 'primary' : 'secondary'}
+                      size="xs"
+                      onClick={() => togglePrerequisito(m.codigo)}
+                      className="font-mono text-[10px]"
+                    >
+                      {isSelected ? `✓ ${m.codigo}` : m.codigo}
+                    </Button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
