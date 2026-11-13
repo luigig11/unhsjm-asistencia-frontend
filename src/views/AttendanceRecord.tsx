@@ -141,7 +141,12 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
       if (motivosRes.status === 'fulfilled' && Array.isArray(motivosRes.value)) {
         const estList = motivosRes.value
           .filter((m) => m.aplicaA === 'ESTUDIANTE' || m.aplicaA === 'AMBOS')
-          .map((m) => ({ id: m.id, codigo: m.codigo, nombre: m.nombre }));
+          .map((m) => ({
+            id: m.id,
+            codigo: m.codigo,
+            nombre: m.nombre,
+            justificaInasistencia: m.justificaInasistencia !== false && m.codigo !== 'INJUSTIFICADA',
+          }));
         setMotivosEstudiante(estList);
 
         const docList = motivosRes.value
@@ -222,7 +227,14 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
   }, [cargarDatos]);
 
   const presentCount = students.filter((s) => s.asistio === 'Presente').length;
-  const absentCount = students.filter((s) => s.asistio === 'Ausente').length;
+  const justifiedCount = students.filter((s) => {
+    if (s.asistio !== 'Ausente') return false;
+    const motObj = motivosEstudiante.find((m) => m.id === s.motivoId);
+    return motObj
+      ? (motObj.justificaInasistencia !== false && motObj.codigo !== 'INJUSTIFICADA')
+      : (Boolean(s.motivoId) && !s.motivo.toLowerCase().includes('injustificada') && s.motivoId !== '00000008-0000-0000-0000-000000000004');
+  }).length;
+  const absentCount = students.filter((s) => s.asistio === 'Ausente').length - justifiedCount;
 
   const filteredStudents = useMemo(() => {
     const term = search.toLowerCase().trim();
@@ -305,15 +317,6 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
       return;
     }
 
-    const missingReasons = students.some(
-      (s) => s.asistio === 'Ausente' && !s.motivoId
-    );
-
-    if (missingReasons && motivosEstudiante.length > 0) {
-      alert('Debes seleccionar el motivo de inasistencia para cada estudiante ausente.');
-      return;
-    }
-
     if (!teacherAttended && !substituteReasonId && motivosDocente.length > 0) {
       setShowSubstituteModal(true);
       return;
@@ -329,13 +332,21 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
         id_docente_sustituto: !teacherAttended && substituteTeacherId ? substituteTeacherId : undefined,
         idMotivoAusencia: !teacherAttended && substituteReasonId ? substituteReasonId : undefined,
         id_motivo_ausencia: !teacherAttended && substituteReasonId ? substituteReasonId : undefined,
-        detalles: students.map((s) => ({
-          idInscripcionGrupo: s.id,
-          id_inscripcion_grupo: s.id,
-          asistio: s.asistio === 'Presente',
-          idMotivoAusencia: s.asistio === 'Ausente' && s.motivoId ? s.motivoId : undefined,
-          id_motivo_ausencia: s.asistio === 'Ausente' && s.motivoId ? s.motivoId : undefined,
-        })),
+        detalles: students.map((s) => {
+          const motObj = motivosEstudiante.find((m) => m.id === s.motivoId);
+          const esJustificada = motObj
+            ? (motObj.justificaInasistencia !== false && motObj.codigo !== 'INJUSTIFICADA')
+            : (Boolean(s.motivoId) && !s.motivo.toLowerCase().includes('injustificada') && s.motivoId !== '00000008-0000-0000-0000-000000000004');
+          const effectiveMotivoId = s.asistio === 'Ausente' && s.motivoId && esJustificada ? s.motivoId : undefined;
+
+          return {
+            idInscripcionGrupo: s.id,
+            id_inscripcion_grupo: s.id,
+            asistio: s.asistio === 'Presente',
+            idMotivoAusencia: effectiveMotivoId,
+            id_motivo_ausencia: effectiveMotivoId,
+          };
+        }),
       };
 
       await guardarActaAsistenciaSesion(activeSessionId, dto);
@@ -364,12 +375,15 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
     const mappedEstudiantes = students.map((s) => {
       const motObj = motivosEstudiante.find((m) => m.id === s.motivoId);
       const motivoTexto = s.motivo || motObj?.nombre || '';
+      const esJustificada = motObj
+        ? (motObj.justificaInasistencia !== false && motObj.codigo !== 'INJUSTIFICADA')
+        : (Boolean(s.motivoId) && !motivoTexto.toLowerCase().includes('injustificada') && s.motivoId !== '00000008-0000-0000-0000-000000000004');
 
       let estado: 'Presente' | 'Ausente' | 'Justificada' | 'Pendiente' = 'Pendiente';
       if (s.asistio === 'Presente') {
         estado = 'Presente';
       } else if (s.asistio === 'Ausente') {
-        if (s.motivoId || s.motivo) {
+        if (esJustificada) {
           estado = 'Justificada';
         } else {
           estado = 'Ausente';
@@ -382,7 +396,7 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
         carnet: s.carnet,
         nombre: s.nombre,
         estado,
-        motivo: motivoTexto,
+        motivo: esJustificada ? motivoTexto : (s.motivoId ? 'Falta sin justificar' : '—'),
       };
     });
 
@@ -500,6 +514,7 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
           onMarkAllPresent={markAllPresent}
           presentCount={presentCount}
           absentCount={absentCount}
+          justifiedCount={justifiedCount}
         />
 
         {showSuccess && (
@@ -510,7 +525,7 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
                 Registro de asistencia guardado exitosamente en base de datos.
               </p>
               <p className="text-xs text-[#166534] mt-0.5">
-                Presentes: {presentCount} · Ausentes: {absentCount} · Total estudiantes: {students.length}
+                Presentes: {presentCount} · Ausentes: {absentCount} {justifiedCount > 0 ? `· Justificadas: ${justifiedCount}` : ''} · Total estudiantes: {students.length}
               </p>
             </div>
           </div>
@@ -521,7 +536,7 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
         <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="hidden sm:block text-left">
             <p className="text-sm font-semibold text-[#0F172A]">
-              {presentCount} presentes · {absentCount} ausentes
+              {presentCount} presentes · {absentCount} ausentes {justifiedCount > 0 ? `· ${justifiedCount} justificadas` : ''}
             </p>
             <p className="text-xs text-[#64748B]">
               {students.length} estudiantes inscritos en el acta

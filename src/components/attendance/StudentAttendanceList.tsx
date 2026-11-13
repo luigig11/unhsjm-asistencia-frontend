@@ -18,6 +18,7 @@ export interface MotivoOpcion {
   id: string;
   codigo: string;
   nombre: string;
+  justificaInasistencia?: boolean;
 }
 
 interface StudentAttendanceListProps {
@@ -31,6 +32,7 @@ interface StudentAttendanceListProps {
   onMarkAllPresent: () => void;
   presentCount: number;
   absentCount: number;
+  justifiedCount?: number;
 }
 
 export const StudentAttendanceList: React.FC<StudentAttendanceListProps> = ({
@@ -44,6 +46,7 @@ export const StudentAttendanceList: React.FC<StudentAttendanceListProps> = ({
   onMarkAllPresent,
   presentCount,
   absentCount,
+  justifiedCount = 0,
 }) => {
   return (
     <section className="bg-white border border-[#E2E8F0] rounded-lg overflow-hidden text-left shadow-sm">
@@ -65,6 +68,11 @@ export const StudentAttendanceList: React.FC<StudentAttendanceListProps> = ({
             <span className="font-semibold text-[#C81E2B] bg-[#FEE2E2] px-2 py-0.5 rounded border border-[#FCA5A5]">
               {absentCount} Ausentes
             </span>
+            {justifiedCount > 0 && (
+              <span className="font-semibold text-[#D97706] bg-[#FFFBEB] px-2 py-0.5 rounded border border-[#FDE68A]">
+                {justifiedCount} Justificadas
+              </span>
+            )}
           </div>
         </div>
 
@@ -138,21 +146,25 @@ export const StudentAttendanceList: React.FC<StudentAttendanceListProps> = ({
                     <select
                       value={student.motivoId || ''}
                       onChange={(e) => {
-                        const sel = motivos.find((m) => m.id === e.target.value);
+                        const val = e.target.value;
+                        const sel = motivos.find((m) => m.id === val);
                         onUpdateMotivo(
                           student.id,
-                          e.target.value,
-                          sel ? sel.nombre : e.target.value
+                          val,
+                          sel ? sel.nombre : (val ? 'Falta sin justificar' : '')
                         );
                       }}
                       className="px-2.5 py-1 text-xs bg-[#FFF4E5] border border-[#F5D6A8] text-[#9A5800] rounded-md outline-none focus:border-[#D97706] cursor-pointer"
                     >
-                      <option value="">Selecciona motivo de ausencia...</option>
-                      {motivos.map((mot) => (
-                        <option key={mot.id} value={mot.id}>
-                          {mot.nombre}
-                        </option>
-                      ))}
+                      <option value="">Falta Injustificada (Sin justificar)</option>
+                      {motivos.map((mot) => {
+                        const esJustificada = mot.justificaInasistencia !== false && mot.codigo !== 'INJUSTIFICADA';
+                        return (
+                          <option key={mot.id} value={mot.id}>
+                            {esJustificada ? `Justificación: ${mot.nombre}` : mot.nombre}
+                          </option>
+                        );
+                      })}
                     </select>
                   )}
 

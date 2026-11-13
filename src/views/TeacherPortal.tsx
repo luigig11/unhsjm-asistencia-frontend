@@ -295,13 +295,18 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
         const fallback = ESTUDIANTES_CATALOGO[carnetKey];
         const motivoId = e.idMotivoAusencia || e.id_motivo_ausencia;
         const motivoNom = motivoId ? (motivosCatalog[motivoId] || 'Justificada con constancia') : '';
+        const esJustificada = Boolean(
+          motivoId &&
+          motivoId !== '00000008-0000-0000-0000-000000000004' &&
+          !motivoNom.toLowerCase().includes('injustificada')
+        );
 
         let estado: 'Presente' | 'Ausente' | 'Justificada' | 'Pendiente' = 'Pendiente';
         if (session.estado === 'Pendiente' && e.asistio === undefined) {
           estado = 'Pendiente';
         } else if (e.asistio === true) {
           estado = 'Presente';
-        } else if (motivoId) {
+        } else if (esJustificada) {
           estado = 'Justificada';
         } else {
           estado = session.estado === 'Registrada' ? 'Ausente' : 'Pendiente';
@@ -313,7 +318,7 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
           carnet: e.carnet || carnetKey,
           nombre: e.nombreCompleto || e.nombre_completo || fallback?.nombre || `Estudiante ${carnetKey}`,
           estado,
-          motivo: motivoNom,
+          motivo: esJustificada ? motivoNom : (motivoId ? 'Falta sin justificar' : ''),
         };
       });
 
