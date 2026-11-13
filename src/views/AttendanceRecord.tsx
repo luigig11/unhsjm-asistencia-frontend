@@ -20,8 +20,10 @@ import {
 import { listarMotivosAusencia } from '../api/catalogos';
 import { listarDocentes } from '../api/docente';
 import { listarSesionesCalendario } from '../api/calendario';
-import { CheckCircleIcon, AlertCircleIcon, ArrowLeftIcon } from '../components/common/Icons';
+import { CheckCircleIcon, AlertCircleIcon, ArrowLeftIcon, DownloadIcon } from '../components/common/Icons';
 import { Button } from '../components/common/Button';
+import { ModalExportarActaPdf } from '../components/attendance/ModalExportarActaPdf';
+import type { ActaPdfTemplateProps } from '../components/attendance/ActaAsistenciaPdfTemplate';
 
 interface AttendanceRecordProps {
   sessionId?: string;
@@ -103,6 +105,7 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
   const [search, setSearch] = useState<string>('');
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [saved, setSaved] = useState<boolean>(false);
+  const [showPdfModal, setShowPdfModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (sessionId) {
@@ -354,6 +357,60 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
     ? formatFecha(sessionData.fecha_inicio)
     : formatFecha(new Date().toISOString());
 
+  const pdfData: ActaPdfTemplateProps = useMemo(() => {
+    const rawAula = sessionData?.aula_codigo || 'Laboratorio A';
+    const cleanAula = rawAula === 'LAB-01' || rawAula === 'A-101' ? 'Laboratorio A' : rawAula;
+
+    const mappedEstudiantes = students.map((s) => {
+      const motObj = motivosEstudiante.find((m) => m.id === s.motivoId);
+      const motivoTexto = s.motivo || motObj?.nombre || '';
+
+      let estado: 'Presente' | 'Ausente' | 'Justificada' | 'Pendiente' = 'Pendiente';
+      if (s.asistio === 'Presente') {
+        estado = 'Presente';
+      } else if (s.asistio === 'Ausente') {
+        if (s.motivoId || s.motivo) {
+          estado = 'Justificada';
+        } else {
+          estado = 'Ausente';
+        }
+      }
+
+      return {
+        id: s.id,
+        codigo_unico: s.codigo_unico,
+        carnet: s.carnet,
+        nombre: s.nombre,
+        estado,
+        motivo: motivoTexto,
+      };
+    });
+
+    return {
+      materiaNombre: sessionData?.materia_nombre || 'Ingeniería del Software II',
+      materiaCodigo: sessionData?.materia_codigo || 'ISI-301',
+      docenteTitular: sessionData?.docente_titular_nombre || 'Danilo Rodríguez',
+      docenteSustituto: !teacherAttended ? substituteTeacher : undefined,
+      motivoSustituto: !teacherAttended ? substituteReason : undefined,
+      grupo: sessionData?.grupo_codigo || 'ISI-IIIB',
+      aula: cleanAula,
+      fecha: dateFormatted,
+      horaInicio: sessionData ? formatHora(sessionData.fecha_inicio) : '14:45',
+      horaFin: sessionData ? formatHora(sessionData.fecha_fin) : '16:45',
+      estadoActa: saved ? 'Registrada' : 'Pendiente',
+      estudiantes: mappedEstudiantes,
+    };
+  }, [
+    sessionData,
+    teacherAttended,
+    substituteTeacher,
+    substituteReason,
+    dateFormatted,
+    students,
+    motivosEstudiante,
+    saved,
+  ]);
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] pb-28 text-left">
       <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -388,6 +445,16 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
                 Ver Sábana de Asistencia
               </Button>
             )}
+
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<DownloadIcon className="w-3.5 h-3.5" />}
+              onClick={() => setShowPdfModal(true)}
+              disabled={loading}
+            >
+              Exportar Acta PDF
+            </Button>
           </div>
         </div>
 
@@ -450,7 +517,7 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#E2E8F0] px-4 py-3 sm:px-6 shadow-md">
+      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#E2E8F0] px-4 py-3 sm:px-6 shadow-md print:hidden">
         <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="hidden sm:block text-left">
             <p className="text-sm font-semibold text-[#0F172A]">
@@ -461,17 +528,31 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
             </p>
           </div>
 
-          <Button
-            type="button"
-            variant={saved ? 'success' : 'primary'}
-            size="lg"
-            onClick={saveAttendance}
-            isLoading={saving}
-            disabled={loading}
-            className="w-full sm:w-auto px-8"
-          >
-            {saved ? '✓ Asistencia Actualizada (Guardar Nuevamente)' : 'Guardar Registro de Asistencia'}
-          </Button>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button
+              type="button"
+              variant="secondary"
+              size="lg"
+              icon={<DownloadIcon className="w-4 h-4" />}
+              onClick={() => setShowPdfModal(true)}
+              disabled={loading}
+              className="w-full sm:w-auto border-[#CBD5E1] text-[#0F3C6E]"
+            >
+              Exportar PDF
+            </Button>
+
+            <Button
+              type="button"
+              variant={saved ? 'success' : 'primary'}
+              size="lg"
+              onClick={saveAttendance}
+              isLoading={saving}
+              disabled={loading}
+              className="w-full sm:w-auto px-8"
+            >
+              {saved ? '✓ Asistencia Actualizada (Guardar Nuevamente)' : 'Guardar Registro de Asistencia'}
+            </Button>
+          </div>
         </div>
       </footer>
 
@@ -483,6 +564,12 @@ export const AttendanceRecord: React.FC<AttendanceRecordProps> = ({
         initialTeacher={substituteTeacher}
         motivos={motivosDocente}
         sustitutos={docentesSustitutos}
+      />
+
+      <ModalExportarActaPdf
+        isOpen={showPdfModal}
+        onClose={() => setShowPdfModal(false)}
+        data={pdfData}
       />
     </div>
   );

@@ -134,7 +134,7 @@ export const AttendanceSheet: React.FC<AttendanceSheetProps> = ({
             codigo_unico: a.codigoUnico || a.codigo_unico || fallback?.codigo_unico || 'SETEC',
             nombre: a.nombreCompleto || a.nombre_completo || fallback?.nombre || `Estudiante ${carnetKey}`,
             attendance: (a.marcajes || []).map((m) =>
-              m.estado === 'PENDIENTE' ? 'A' : (m.estado as 'P' | 'A' | 'J')
+              m.estado === 'PENDIENTE' ? '-' : (m.estado as 'P' | 'A' | 'J')
             ),
             reasons: (a.marcajes || []).map((m) => m.motivoAusenciaNombre || m.motivo_ausencia_nombre || ''),
           };

@@ -38,7 +38,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
     <aside
       className={`${
         collapsed ? 'w-16' : 'w-64'
-      } bg-[#0F3C6E] text-white border-r border-[#0A294D] flex flex-col justify-between shrink-0 transition-all duration-150`}
+      } bg-[#0F3C6E] text-white border-r border-[#0A294D] flex flex-col justify-between shrink-0 transition-all duration-150 print:hidden`}
     >
       <div>
         <div className="h-16 px-3 flex items-center justify-between border-b border-[#0A294D]">

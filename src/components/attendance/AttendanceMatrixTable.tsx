@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type AttendanceStatus = 'P' | 'A' | 'J';
+export type AttendanceStatus = 'P' | 'A' | 'J' | '-';
 
 export interface Session {
   id: number;
@@ -18,9 +18,10 @@ export interface SheetStudent {
 }
 
 export const getPercentage = (attendance: AttendanceStatus[]): number => {
-  if (attendance.length === 0) return 0;
-  const present = attendance.filter((s) => s === 'P').length;
-  return Math.round((present / attendance.length) * 100);
+  const evaluated = attendance.filter((s) => s === 'P' || s === 'A' || s === 'J');
+  if (evaluated.length === 0) return 100;
+  const present = evaluated.filter((s) => s === 'P').length;
+  return Math.round((present / evaluated.length) * 100);
 };
 
 export const getStatusColor = (status: AttendanceStatus): string => {
@@ -31,8 +32,9 @@ export const getStatusColor = (status: AttendanceStatus): string => {
       return 'bg-[#C81E2B] text-white border-[#C81E2B]';
     case 'J':
       return 'bg-[#D97706] text-white border-[#D97706]';
+    case '-':
     default:
-      return 'bg-slate-100 text-slate-700 border-slate-300';
+      return 'bg-[#F1F5F9] text-[#64748B] border-[#CBD5E1]';
   }
 };
 
@@ -170,19 +172,21 @@ export const AttendanceMatrixTable: React.FC<AttendanceMatrixTableProps> = ({
                         const reason = student.reasons[sessionIndex];
                         const sessionInfo = sessions[sessionIndex];
 
-                        const tooltip = [
-                          sessionInfo ? `Sesión ${sessionInfo.number} (${sessionInfo.date})` : '',
-                          `Estado: ${
-                            status === 'P'
-                              ? 'Presente'
-                              : status === 'A'
-                                ? 'Ausente'
-                                : 'Justificada'
-                          }`,
-                          reason ? `Motivo: ${reason}` : '',
-                        ]
-                          .filter(Boolean)
-                          .join(' | ');
+                        const tooltip = status === '-'
+                          ? `${sessionInfo ? `Sesión ${sessionInfo.number} (${sessionInfo.date})` : ''} | Estado: Pendiente (No impartida aún)`
+                          : [
+                              sessionInfo ? `Sesión ${sessionInfo.number} (${sessionInfo.date})` : '',
+                              `Estado: ${
+                                status === 'P'
+                                  ? 'Presente'
+                                  : status === 'A'
+                                    ? 'Ausente'
+                                    : 'Justificada'
+                              }`,
+                              reason ? `Motivo: ${reason}` : '',
+                            ]
+                              .filter(Boolean)
+                              .join(' | ');
 
                         return (
                           <td
@@ -193,7 +197,7 @@ export const AttendanceMatrixTable: React.FC<AttendanceMatrixTableProps> = ({
                             <span
                               className={`inline-flex items-center justify-center w-7 h-7 rounded text-xs font-bold border ${getStatusColor(status)}`}
                             >
-                              {status}
+                              {status === '-' ? '—' : status}
                             </span>
                           </td>
                         );

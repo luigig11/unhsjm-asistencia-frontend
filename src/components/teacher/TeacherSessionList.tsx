@@ -1,5 +1,5 @@
 import React from 'react';
-import { SearchIcon, ClockIcon, CheckCircleIcon } from '../common/Icons';
+import { SearchIcon, ClockIcon, CheckCircleIcon, DownloadIcon } from '../common/Icons';
 import { Button } from '../common/Button';
 
 export type SessionStatus = 'Pendiente' | 'Registrada';
@@ -24,6 +24,7 @@ interface TeacherSessionListProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   onPassAttendance: (session: TeacherSession) => void;
+  onExportPdf?: (session: TeacherSession) => void;
 }
 
 export const TeacherSessionList: React.FC<TeacherSessionListProps> = ({
@@ -32,6 +33,7 @@ export const TeacherSessionList: React.FC<TeacherSessionListProps> = ({
   searchTerm,
   onSearchChange,
   onPassAttendance,
+  onExportPdf,
 }) => {
   return (
     <section className="bg-white border border-[#E2E8F0] rounded-lg overflow-hidden text-left shadow-sm">
@@ -141,14 +143,28 @@ export const TeacherSessionList: React.FC<TeacherSessionListProps> = ({
                     </span>
                   </div>
 
-                  <Button
-                    variant={isPending ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => onPassAttendance(session)}
-                    className="w-full"
-                  >
-                    {isPending ? 'Pasar Asistencia' : 'Ver Acta Registrada'}
-                  </Button>
+                  <div className="flex items-center gap-2 pt-1">
+                    <Button
+                      variant={isPending ? 'primary' : 'outline'}
+                      size="sm"
+                      onClick={() => onPassAttendance(session)}
+                      className="flex-1"
+                    >
+                      {isPending ? 'Pasar Asistencia' : 'Ver Acta'}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      icon={<DownloadIcon className="w-3.5 h-3.5" />}
+                      onClick={() => onExportPdf?.(session)}
+                      title="Exportar Acta Oficial a PDF"
+                      className="border-[#CBD5E1] text-[#0F3C6E] hover:bg-[#EBF3FC] px-2.5"
+                    >
+                      Exportar PDF
+                    </Button>
+                  </div>
                 </div>
               );
             })}
